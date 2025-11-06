@@ -47,38 +47,8 @@
             white-space: pre;
             margin: 2rem 0;
             text-shadow: 0 0 5px #0F0;
-            line-height: 1; /* Compacta las líneas del logo */
-        }
-        
-        /* Estilo para el contenedor de términos (scrollable) */
-        #terms-container {
-            max-height: 60vh;
-            overflow-y: auto;
-            border: 1px solid #0F0;
-            background-color: rgba(0, 10, 0, 0.8);
-            text-align: left;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            font-size: 0.875rem; /* Pequeño para simular terminal */
-            font-family: 'Courier New', Courier, monospace;
-            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3); /* Glow */
-        }
-        
-        /* Scrollbar estilo hacker */
-        #terms-container::-webkit-scrollbar {
-            width: 8px;
         }
 
-        #terms-container::-webkit-scrollbar-track {
-            background: #000;
-        }
-
-        #terms-container::-webkit-scrollbar-thumb {
-            background-color: #0F0;
-            border-radius: 20px;
-            border: 1px solid #000;
-        }
-        
         /* Efecto de parpadeo (cursor) */
         @keyframes blink {
             50% { opacity: 0; }
@@ -91,20 +61,27 @@
             background-color: #0F0;
             animation: blink 1s step-end infinite;
         }
-        
-        /* Efecto de parpadeo sutil para colaboradores */
-        .blinking-text {
-            animation: blink 2s step-end infinite;
-            text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+
+        /* Estilos para el scrollbar temático (Chrome, Safari) */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #000;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #053b05;
+            border-radius: 20px;
+            border: 1px solid #0F0;
         }
     </style>
     <script>
+        // Configuración de Tailwind para usar la fuente Inter
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
-                        mono: ['Courier New', 'Courier', 'monospace'], // Usamos mono en tailwind
                     },
                 }
             }
@@ -129,27 +106,30 @@
             </p>
     </div>
 
-    <div id="termsScreen" class="overlay-screen opacity-0 pointer-events-none p-4">
-        <div class="p-4 w-full max-w-2xl">
+    <div id="termsScreen" class="overlay-screen opacity-0 pointer-events-none p-4 sm:p-8">
+        <div class="p-8 w-full max-w-2xl h-full max-h-[90vh] bg-gray-900 border-2 border-green-500 shadow-2xl shadow-green-900/50 rounded-lg flex flex-col">
             
-            <h2 class="text-3xl font-bold mb-4 text-green-400 font-mono text-center">
-                PROTOCOLO DE ACCESO RESTRINGIDO
+            <h2 class="text-3xl font-bold mb-4 text-green-400 text-center font-mono">
+                PROTOCOLO DE ACCESO: TÉRMINOS Y CONDICIONES
             </h2>
-            
-            <div id="terms-container">
+
+            <div id="terms-content" class="flex-grow overflow-y-scroll p-4 border-t border-b border-green-700 mb-6 font-mono text-sm text-left whitespace-pre-wrap leading-relaxed custom-scrollbar" style="height: 40vh;">
                 </div>
             
-            <button id="accept-button" class="w-full py-2 mt-4 bg-green-700 hover:bg-green-600 transition duration-300 text-black font-extrabold rounded-sm shadow-md shadow-green-900/50">
-                ACEPTAR TÉRMINOS Y CONTINUAR (CMD:INIT)
-            </button>
-            
-            <p id="accept-status" class="mt-4 text-sm text-center font-mono opacity-0 text-red-400">
+            <div class="flex flex-col items-center">
+                <p id="terms-status" class="mt-2 mb-4 text-sm font-mono text-red-400 opacity-0 transition-opacity duration-500">
+                    Desplácese hasta el final para activar el botón de ACEPTAR.
                 </p>
+
+                <button id="accept-button" class="w-full max-w-sm py-2 bg-gray-600 cursor-not-allowed transition duration-300 text-black font-extrabold rounded-sm shadow-md shadow-gray-900/50" disabled>
+                    ACEPTAR Y CONTINUAR <span class="text-xs"> (CMD:ACCEPT)</span>
+                </button>
+            </div>
         </div>
     </div>
 
     <script>
-        // --- PARTE 1: LÓGICA DEL MATRIX RAIN (SIN CAMBIOS) ---
+        // --- PARTE 1: LÓGICA DEL MATRIX RAIN (MEJORADA) ---
 
         const canvas = document.getElementById('matrixCanvas');
         const ctx = canvas.getContext('2d');
@@ -206,7 +186,7 @@
             requestAnimationFrame(drawMatrixRain);
         }
 
-        // --- PARTE 2: LÓGICA DE LA SECUENCIA DE BOOT Y TRANSICIÓN (ACTUALIZADA) ---
+        // --- PARTE 2: LÓGICA DE LA SECUENCIA DE BOOT Y TRANSICIÓN ---
 
         const BOOT_DURATION_MS = 10000;
         const bootScreen = document.getElementById('bootScreen');
@@ -216,89 +196,56 @@
         const loadingBar = document.getElementById('loading-bar');
         const finalMessage = document.getElementById('final-message');
 
-        // Nuevo Logo ASCII
+        // NUEVO LOGO
         const logoLines = [
             "[ Iniciando Codificación ]",
-            " ",
-            "                    .'.. /|",
-            "                   / |  //",
-            "                 _.'./.'./",
-            "                ( LEVIATHAN )",
-            "                 \\_`\\_`\\_/",
-            "                   / / /",
-            "                  | | |",
-            "                  \\_/",
-            " ",
-            "[ Industries Lazarus ]",
-            " ",
-            "                    [ CdCars ]",
-            " ",
-            "                          [ System404G ]",
-            " ",
-            "[ Status: Online ]",
+            "",
+            "                     .'.. /|",
+            "                    / |  //",
+            "                 _.'./.'./",
+            "                ( LEVIATHAN )",
+            "                 \\_`\\_`\\_/",
+            "                   / / /",
+            "                  | | |",
+            "                  \\_/",
+            "",
+            "                [ Status: Online ]",
+            "",
+            "[ Imdustrias Lazarus ]",
+            "",
+            "                       [ KaliHunter32 ]"
         ];
 
         const messages = [
-            `> Conectado a servidores de system404g [ OK ]`,
-            `> Ejecutando protocolo leviathan. Acceso público.`,
+            `> Conectado a servidores de system404G`,
+            `> Ejecutando protocolo leviatham. Acceso concedido.`,
             `> Verificación de integridad de núcleo [ OK ]`,
-            `> Inicializando subsistemas de interfaz...`,
-            `> Cargando módulos de advertencia legal...`,
+            `> Inicializando subsistemas de interfaz ...`
         ];
 
         let currentMessageIndex = 0;
         let currentLogoLine = 0;
-        let bootTimer; // Para el skip
 
         function updateBootMessages() {
-            // Elimina el cursor del mensaje anterior
-            const lastMessage = bootMessagesDiv.lastElementChild;
-            if (lastMessage && lastMessage.querySelector('.cursor')) {
-                lastMessage.querySelector('.cursor').remove();
-            }
+            // Asegura que el cursor solo esté en el último mensaje
+            const lastCursor = bootMessagesDiv.querySelector('.cursor');
+            if (lastCursor) lastCursor.remove();
 
             if (currentMessageIndex < messages.length) {
                 const message = messages[currentMessageIndex];
-                // Usa un Typewriter simple para los mensajes
-                let charIndex = 0;
-                const p = document.createElement('p');
-                p.className = "mb-1";
-                bootMessagesDiv.appendChild(p);
+                bootMessagesDiv.innerHTML += `<p class="mb-1">${message}<span class="cursor"></span></p>`;
+                currentMessageIndex++;
                 
-                function typeMessage() {
-                    if (charIndex < message.length) {
-                        p.textContent += message.charAt(charIndex);
-                        charIndex++;
-                        setTimeout(typeMessage, 30); // Velocidad rápida
-                    } else {
-                        p.innerHTML += `<span class="cursor"></span>`;
-                        currentMessageIndex++;
-                        // Llama al siguiente mensaje después de una pausa
-                        setTimeout(updateBootMessages, 1200);
-                    }
-                }
-                typeMessage();
+                // Muestra un mensaje cada 1.5 segundos
+                setTimeout(updateBootMessages, 1500);
             } else if (currentLogoLine < logoLines.length) {
                 // Empieza a construir el logo después de los mensajes
-                let line = logoLines[currentLogoLine];
-                
-                // Aplicar efecto de parpadeo a colaboradores específicos
-                if (line.includes('Lazarus')) {
-                    line = line.replace('[ Industries Lazarus ]', '<span class="blinking-text">[ Industries Lazarus ]</span>');
-                }
-                if (line.includes('CdCars')) {
-                    line = line.replace('[ CdCars ]', '<span class="blinking-text">[ CdCars ]</span>');
-                }
-                if (line.includes('System404G')) {
-                    line = line.replace('[ System404G ]', '<span class="blinking-text">[ System404G ]</span>');
-                }
-                
-                asciiLogoDiv.innerHTML += `${line}\n`;
+                asciiLogoDiv.innerHTML += `${logoLines[currentLogoLine]}\n`;
                 asciiLogoDiv.style.opacity = '1';
                 currentLogoLine++;
 
                 // Acelera la construcción del logo
-                setTimeout(updateBootMessages, 50); // Muy rápido para el logo
+                setTimeout(updateBootMessages, 150);
             }
         }
 
@@ -313,7 +260,7 @@
                 loadingBar.style.width = `${Math.floor(progress * 100)}%`;
 
                 if (progress < 1) {
-                    bootTimer = requestAnimationFrame(loop);
+                    requestAnimationFrame(loop);
                 } else {
                     // Finaliza la carga, muestra el mensaje final y transiciona
                     showFinalMessage();
@@ -327,10 +274,14 @@
         }
 
         function showFinalMessage() {
-            finalMessage.textContent = "Protocolo de Acceso Iniciado. Lea Términos.";
+            // Elimina el cursor final de los mensajes de boot
+            const lastCursor = bootMessagesDiv.querySelector('.cursor');
+            if (lastCursor) lastCursor.remove();
+            
+            finalMessage.textContent = "Conexión estable. Iniciando protocolo de acceso...";
             finalMessage.style.opacity = '1';
 
-            // 1.5 segundos después del final de la carga, transiciona a los términos
+            // 1.5 segundos después del final de la carga, transiciona a T&C
             setTimeout(transitionToTerms, 1500);
         }
 
@@ -339,87 +290,87 @@
             bootScreen.style.opacity = '0';
             bootScreen.classList.add('pointer-events-none');
 
-            // Muestra la pantalla de términos
+            // Muestra la pantalla de T&C
             termsScreen.style.opacity = '1';
             termsScreen.classList.remove('pointer-events-none');
-            
-            // Carga los términos
-            loadTermsAndConditions();
+
+            // Inicia la lógica de T&C
+            setupTermsAndConditions();
         }
-        
+
         // --- PARTE 3: LÓGICA DE TÉRMINOS Y CONDICIONES ---
         
-        const termsContainer = document.getElementById('terms-container');
+        const termsContentDiv = document.getElementById('terms-content');
         const acceptButton = document.getElementById('accept-button');
-        const acceptStatus = document.getElementById('accept-status');
+        const termsStatus = document.getElementById('terms-status');
 
-        const termsContent = `
+        // Texto de los Términos y Condiciones (se usa el texto proporcionado)
+        const termsText = `
 LEA ATENTAMENTE ESTOS TÉRMINOS ANTES DE CONTINUAR.
 
---------------------------------------------------------------
-
 1. Objeto y Filosofía de la Comunidad
+
 La comunidad "Protocol Leviathan" es un espacio de libre información, estudio, divulgación y debate enfocado en la Informática, la Ciberseguridad y el Hacking Ético. Nuestro objetivo es la difusión del conocimiento técnico para promover la seguridad digital y la comprensión de los sistemas. No buscamos crear una comunidad maliciosa.
 
 2. Principios de Uso y Hacking Ético
+
 El usuario acepta que todo el contenido, herramientas, técnicas y enseñanzas compartidas están destinados exclusivamente a fines educativos, de investigación y de defensa (Hacking Ético).
-El usuario se compromete a:
+El usuario se compromete a: 
+
 - No utilizar la información, el código o las herramientas para dañar sistemas, personas, organizaciones o propiedades sin autorización expresa y documentada de su propietario.
 - Respetar las leyes de la República Argentina con respecto al acceso y modificación de sistemas informáticos.
 
 3. Exención de Responsabilidad y Limitación Legal (Argentina)
+
 El creador y distribuidor de esta comunidad, KaliHunter32, opera bajo el principio de la libre información y la neutralidad tecnológica.
 KaliHunter32 NO se hace responsable del mal uso que los miembros o terceros puedan dar a las herramientas, conocimientos y enseñanzas impartidas dentro de "Protocol Leviathan". La responsabilidad legal recae única y exclusivamente en el usuario que realiza la acción.
-La comunidad se abstiene de hacerse cargo legalmente de las consecuencias derivadas de las acciones individuales de sus miembros. El usuario reconoce que cualquier acto ilegal que cometa utilizando información de esta web lo hace bajo su propia cuenta y riesgo, y que tales actos están tipificados como delitos en el Código Penal de la Nación Argentina (Ley 26.388), incluyendo, pero no limitándose a:
+La comunidad se abstiene de hacerse cargo legalmente de las consecuencias derivadas de las acciones individuales de sus miembros. 
+El usuario reconoce que cualquier acto ilegal que cometa utilizando información de esta web lo hace bajo su propia cuenta y riesgo, y que tales actos están tipificados como delitos en el Código Penal de la Nación Argentina (Ley 26.388), incluyendo, pero no limitándose a:
 - Violación de correspondencia (Art. 153 C.P.): El acceso indebido a comunicaciones electrónicas o datos restringidos.
 - Acceso ilegítimo a un sistema informático (Art. 153 bis C.P.): El que sin la debida autorización o excediendo la que posea, acceda a un sistema o dato informático de acceso restringido.
 - Sabotaje o daño informático (Art. 183 y 184 C.P.): El que destruyere, inutilizare, dañare, borrare o hiciere desaparecer datos, documentos, programas o sistemas de computación.
 Al aceptar, el usuario desvincula totalmente a KaliHunter32 y a la comunidad "Protocol Leviathan" de toda consecuencia penal, civil o administrativa que pueda derivarse de su conducta.
 
 4. Moderación y Terminación de la Cuenta
+
 La comunidad se reserva el derecho de eliminar cualquier contenido o cuenta que promueva o ejecute actividades maliciosas o ilegales sin previo aviso.
+        `;
 
---------------------------------------------------------------
+        function setupTermsAndConditions() {
+            termsContentDiv.textContent = termsText.trim();
+            termsStatus.style.opacity = '1';
 
-[ END OF FILE ]`;
-        
-        // Función para cargar los términos usando un efecto de escritura
-        async function loadTermsAndConditions() {
-            // Creamos un efecto de Typewriter simulado para el contenido legal
-            termsContainer.textContent = "";
-            acceptStatus.textContent = "";
-            acceptStatus.style.opacity = '0';
+            // Función para verificar si el usuario llegó al final del scroll
+            termsContentDiv.addEventListener('scroll', function() {
+                const { scrollTop, scrollHeight, clientHeight } = termsContentDiv;
 
-            let charIndex = 0;
-            const delay = 5; // muy rápido
-            
-            function typeTerms() {
-                if (charIndex < termsContent.length) {
-                    termsContainer.textContent += termsContent.charAt(charIndex);
-                    charIndex++;
-                    setTimeout(typeTerms, delay);
+                // Margen de 1 píxel para asegurar que funciona en todos los navegadores
+                if (scrollHeight - scrollTop <= clientHeight + 1) {
+                    // El usuario llegó al final
+                    acceptButton.disabled = false;
+                    acceptButton.classList.remove('bg-gray-600', 'cursor-not-allowed', 'shadow-gray-900/50');
+                    acceptButton.classList.add('bg-green-700', 'hover:bg-green-600', 'shadow-green-900/50');
+                    termsStatus.textContent = '¡LECTURA COMPLETA! Presione ACEPTAR para continuar.';
+                    termsStatus.classList.remove('text-red-400');
+                    termsStatus.classList.add('text-green-400');
                 }
-            }
-            typeTerms();
+            });
+
+            // Lógica al hacer clic en ACEPTAR
+            acceptButton.addEventListener('click', function() {
+                if (!acceptButton.disabled) {
+                    termsStatus.textContent = "> Protocolo de acceso ACEPTADO. Iniciando interfaz principal...";
+                    termsStatus.classList.remove('text-red-400');
+                    termsStatus.classList.add('text-green-400');
+                    
+                    // Aquí es donde harías la transición a la página principal de la comunidad
+                    setTimeout(() => {
+                        alert("¡Acceso concedido! Redirigiendo a la Interfaz Principal.");
+                        // window.location.href = "/main_interface.html"; // Descomenta esto para redireccionar
+                    }, 1000);
+                }
+            });
         }
-
-        // Listener para el botón ACEPTAR
-        acceptButton.addEventListener('click', function() {
-            acceptStatus.classList.remove('text-red-400');
-            acceptStatus.classList.add('text-green-400');
-            acceptStatus.textContent = `> Leyendo y aceptando advertencia legal. Bienvenido.`;
-            acceptStatus.style.opacity = '1';
-            
-            acceptButton.disabled = true;
-            acceptButton.textContent = "ACCESO CONCEDIDO. REDIRIGIENDO...";
-            
-            // Simulación de redirección o inicio de la web principal
-            setTimeout(() => {
-                alert("¡Acceso a Protocolo LEVIATHAN concedido! Aquí iría el contenido principal de la web.");
-                // Aquí podrías redirigir: window.location.href = "/main-page.html";
-            }, 2000);
-        });
-
 
         // Iniciar todo
         window.onload = function () {
