@@ -6,7 +6,7 @@
     <title>Protocolo LEVIATHAN - Acceso Requerido</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Estilos base (Mantenidos) */
+        /* Estilos personalizados para el canvas y la superposición */
         body {
             background-color: #000;
             overflow: hidden;
@@ -22,6 +22,8 @@
             z-index: 0;
             position: absolute;
         }
+        
+        /* Estilo base para todas las pantallas de superposición */
         .overlay-screen {
             position: fixed;
             top: 0;
@@ -33,17 +35,55 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            color: #0F0;
+            color: #0F0; /* Verde brillante */
             transition: opacity 1s ease-in-out;
             z-index: 10;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.5); /* Oscurece un poco el fondo del matrix */
         }
+
+        /* Estilo para el logo ASCII */
         #ascii-logo {
             font-family: 'Courier New', Courier, monospace;
             white-space: pre;
             margin: 2rem 0;
             text-shadow: 0 0 5px #0F0;
+            line-height: 1; /* Compacta las líneas del logo */
         }
+        
+        /* Estilo para el contenedor de términos (scrollable) */
+        #terms-container {
+            max-height: 60vh;
+            overflow-y: auto;
+            border: 1px solid #0F0;
+            background-color: rgba(0, 10, 0, 0.8);
+            text-align: left;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem; /* Pequeño para simular terminal */
+            font-family: 'Courier New', Courier, monospace;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3); /* Glow */
+        }
+        
+        /* Scrollbar estilo hacker */
+        #terms-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #terms-container::-webkit-scrollbar-track {
+            background: #000;
+        }
+
+        #terms-container::-webkit-scrollbar-thumb {
+            background-color: #0F0;
+            border-radius: 20px;
+            border: 1px solid #000;
+        }
+        
+        /* Efecto de parpadeo (cursor) */
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
         .cursor {
             display: inline-block;
             width: 8px;
@@ -51,64 +91,12 @@
             background-color: #0F0;
             animation: blink 1s step-end infinite;
         }
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #000;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background-color: #053b05;
-            border-radius: 20px;
-            border: 1px solid #0F0;
-        }
-
-        /* --- ESTILOS PARA INTERFAZ PRINCIPAL --- */
         
-        #mainInterface {
-            background: rgba(0, 0, 0, 0.85); 
-            padding: 2rem;
-            max-height: 95vh;
-            overflow-y: auto;
-            border: 2px solid #5a00ff; 
-            box-shadow: 0 0 20px rgba(90, 0, 255, 0.7);
-            color: #A0FFA0; 
+        /* Efecto de parpadeo sutil para colaboradores */
+        .blinking-text {
+            animation: blink 2s step-end infinite;
+            text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
         }
-        
-        /* Glitch Animation */
-        .glitch {
-            font-family: 'Courier New', monospace;
-            font-size: 3rem;
-            color: #00FF00;
-            position: relative;
-            text-shadow: 0.05em 0 0 #00FF00, -0.05em -0.025em 0 #5A00FF, 0.025em 0.05em 0 #009900;
-            animation: glitch 1.5s infinite;
-        }
-        @keyframes glitch {
-            0% { text-shadow: 0.05em 0 0 #00FF00, -0.05em -0.025em 0 #5A00FF, 0.025em 0.05em 0 #009900; transform: translate(0.05em, 0.05em); }
-            14% { text-shadow: 0.05em 0 0 #00FF00, -0.05em -0.025em 0 #5A00FF, 0.025em 0.05em 0 #009900; transform: translate(0.05em, 0.05em); }
-            15% { text-shadow: -0.05em -0.025em 0 #5A00FF, 0.025em 0.05em 0 #009900; transform: translate(-0.025em, -0.05em); }
-            49% { text-shadow: -0.05em -0.025em 0 #5A00FF, 0.025em 0.05em 0 #009900; transform: translate(-0.025em, -0.05em); }
-            50% { text-shadow: 0.05em 0 0 #00FF00, -0.05em -0.025em 0 #5A00FF; transform: translate(0.05em, 0); }
-            99% { text-shadow: 0.05em 0 0 #00FF00, -0.05em -0.025em 0 #5A00FF; transform: translate(0.05em, 0); }
-            100% { text-shadow: 0.05em 0 0 #00FF00, -0.05em -0.025em 0 #5A00FF, 0.025em 0.05em 0 #009900; transform: translate(0.05em, 0.05em); }
-        }
-
-        /* Estilos de neón para los colaboradores (usados en T&C y Main) */
-        .collab-name {
-            display: inline-block;
-            font-family: 'Consolas', monospace;
-            font-weight: bold;
-            padding: 0.2rem 0.5rem;
-            margin: 0.3rem 0;
-            border-radius: 4px;
-        }
-        .lazarus { color: #FF00FF; text-shadow: 0 0 5px #FF00FF; }
-        .tflows-v { color: #FFFF00; text-shadow: 0 0 5px #FFFF00; }
-        .cdcards { color: #00FFFF; text-shadow: 0 0 5px #00FFFF; }
-        .luniuns-onion { color: #FFA500; text-shadow: 0 0 5px #FFA500; }
-        .system404g { color: #00FF00; text-shadow: 0 0 5px #00FF00; }
-
     </style>
     <script>
         tailwind.config = {
@@ -116,6 +104,7 @@
                 extend: {
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
+                        mono: ['Courier New', 'Courier', 'monospace'], // Usamos mono en tailwind
                     },
                 }
             }
@@ -126,54 +115,42 @@
     <canvas id="matrixCanvas"></canvas>
     
     <div id="bootScreen" class="overlay-screen">
-        <div id="boot-messages" class="text-xl sm:text-2xl font-mono text-left w-full max-w-lg p-4"></div>
-        <div id="ascii-logo" class="text-base sm:text-xl opacity-0 transition-opacity duration-1000"></div>
+        <div id="boot-messages" class="text-xl sm:text-2xl font-mono text-left w-full max-w-lg p-4">
+            </div>
+
+        <div id="ascii-logo" class="text-base sm:text-xl opacity-0 transition-opacity duration-1000">
+            </div>
+
         <div id="loading-bar-container" class="mt-8 w-full max-w-xs h-4 border border-green-500 bg-black">
             <div id="loading-bar" class="h-full bg-green-700 transition-all duration-1000 ease-linear" style="width: 0%;"></div>
         </div>
-        <p id="final-message" class="text-2xl sm:text-3xl font-bold mt-8 opacity-0 transition-opacity duration-1000"></p>
-    </div>
 
-    <div id="termsScreen" class="overlay-screen opacity-0 pointer-events-none p-4 sm:p-8">
-        <div class="p-8 w-full max-w-2xl h-full max-h-[90vh] bg-gray-900 border-2 border-green-500 shadow-2xl shadow-green-900/50 rounded-lg flex flex-col">
-            <h2 class="text-3xl font-bold mb-4 text-green-400 text-center font-mono">
-                PROTOCOLO DE ACCESO: TÉRMINOS Y CONDICIONES
-            </h2>
-            <div id="terms-content" class="flex-grow overflow-y-scroll p-4 border-t border-b border-green-700 mb-6 font-mono text-sm text-left whitespace-pre-wrap leading-relaxed custom-scrollbar" style="height: 40vh;"></div>
-            <div class="flex flex-col items-center">
-                <p id="terms-status" class="mt-2 mb-4 text-sm font-mono text-red-400 opacity-0 transition-opacity duration-500">
-                    Desplácese hasta el final para activar el botón de ACEPTAR.
-                </p>
-                <button id="accept-button" class="w-full max-w-sm py-2 bg-gray-600 cursor-not-allowed transition duration-300 text-black font-extrabold rounded-sm shadow-md shadow-gray-900/50" disabled>
-                    ACEPTAR Y CONTINUAR <span class="text-xs"> (CMD:ACCEPT)</span>
-                </button>
-            </div>
-        </div>
-    </div>
-    
-    <div id="mainInterfaceScreen" class="overlay-screen opacity-0 pointer-events-none p-4 sm:p-8">
-        <div id="mainInterface" class="w-full max-w-4xl rounded-lg font-mono text-center">
-            
-            <header class="text-center mb-10">
-                <h1 class="glitch text-5xl font-extrabold tracking-widest text-green-400 mb-2">
-                    BIENVENIDOS AVENTUREROS
-                </h1>
-                <p class="text-xl text-purple-400">PROTOCOLO LEVIATHAN :: CONEXIÓN ESTABLECIDA</p>
-            </header>
-            
-            <p class="text-base text-gray-300">
-                Sistema operativo en línea. Se han cargado las directrices. Presione [ENTER] para acceder al menú de comandos.
+        <p id="final-message" class="text-2xl sm:text-3xl font-bold mt-8 opacity-0 transition-opacity duration-1000">
             </p>
-
-            <button class="mt-8 py-2 px-6 bg-purple-700 hover:bg-purple-600 transition duration-300 text-white font-extrabold rounded-sm shadow-md shadow-purple-900/50">
-                [INICIAR SESIÓN DE COMANDOS]
-            </button>
-        </div>
     </div>
 
+    <div id="termsScreen" class="overlay-screen opacity-0 pointer-events-none p-4">
+        <div class="p-4 w-full max-w-2xl">
+            
+            <h2 class="text-3xl font-bold mb-4 text-green-400 font-mono text-center">
+                PROTOCOLO DE ACCESO RESTRINGIDO
+            </h2>
+            
+            <div id="terms-container">
+                </div>
+            
+            <button id="accept-button" class="w-full py-2 mt-4 bg-green-700 hover:bg-green-600 transition duration-300 text-black font-extrabold rounded-sm shadow-md shadow-green-900/50">
+                ACEPTAR TÉRMINOS Y CONTINUAR (CMD:INIT)
+            </button>
+            
+            <p id="accept-status" class="mt-4 text-sm text-center font-mono opacity-0 text-red-400">
+                </p>
+        </div>
+    </div>
 
     <script>
-        // --- PARTE 1: LÓGICA DEL MATRIX RAIN ---
+        // --- PARTE 1: LÓGICA DEL MATRIX RAIN (SIN CAMBIOS) ---
+
         const canvas = document.getElementById('matrixCanvas');
         const ctx = canvas.getContext('2d');
         const katakana = 'アァカサタナハマヤラワガザダバパヰヱヲンヴヵヶ' +
@@ -182,7 +159,6 @@
         const fontSize = 16;
         let columns = 0;
         let drops = [];
-        let matrixRainId = null; 
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
@@ -199,257 +175,256 @@
         function drawMatrixRain() {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; 
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+
             ctx.font = fontSize + 'px monospace';
 
             for (let i = 0; i < drops.length; i++) {
                 const x = i * fontSize;
                 let y = drops[i] * fontSize;
+
                 const text = characters[Math.floor(Math.random() * characters.length)];
                 
+                // Color para la cola (Verde estándar)
                 ctx.fillStyle = '#01a61c'; 
                 ctx.fillText(text, x, y);
 
+                // Color para la cabeza (Verde brillante)
                 const headY = (drops[i] - 5) * fontSize;
                 if (headY > 0) {
                     ctx.fillStyle = '#C0FFC0'; 
                     ctx.fillText(text, x, headY);
                 }
 
+                // Reinicia la gota
                 if (y > canvas.height && Math.random() > 0.975) {
                     drops[i] = 0;
                 }
                 
                 drops[i]++;
             }
-            matrixRainId = requestAnimationFrame(drawMatrixRain);
+
+            requestAnimationFrame(drawMatrixRain);
         }
 
-        // --- PARTE 2: LÓGICA DE BOOT Y TRANSICIÓN ---
+        // --- PARTE 2: LÓGICA DE LA SECUENCIA DE BOOT Y TRANSICIÓN (ACTUALIZADA) ---
 
         const BOOT_DURATION_MS = 10000;
         const bootScreen = document.getElementById('bootScreen');
         const termsScreen = document.getElementById('termsScreen');
-        const mainInterfaceScreen = document.getElementById('mainInterfaceScreen');
         const bootMessagesDiv = document.getElementById('boot-messages');
         const asciiLogoDiv = document.getElementById('ascii-logo');
         const loadingBar = document.getElementById('loading-bar');
         const finalMessage = document.getElementById('final-message');
 
+        // Nuevo Logo ASCII
         const logoLines = [
             "[ Iniciando Codificación ]",
-            "",
-            "                     .'.. /|",
-            "                    / |  //",
-            "                 _.'./.'./",
-            "                ( LEVIATHAN )",
-            "                 \\_`\\_`\\_/",
-            "                   / / /",
-            "                  | | |",
-            "                  \\_/",
-            "",
-            "                [ Status: Online ]",
-            "",
-            "[ Imdustrias Lazarus ]",
-            "",
-            "                       [ KaliHunter32 ]"
+            " ",
+            "                    .'.. /|",
+            "                   / |  //",
+            "                 _.'./.'./",
+            "                ( LEVIATHAN )",
+            "                 \\_`\\_`\\_/",
+            "                   / / /",
+            "                  | | |",
+            "                  \\_/",
+            " ",
+            "[ Industries Lazarus ]",
+            " ",
+            "                    [ CdCars ]",
+            " ",
+            "                          [ System404G ]",
+            " ",
+            "[ Status: Online ]",
         ];
 
         const messages = [
-            `> Conectado a servidores de system404G`,
-            `> Ejecutando protocolo leviatham. Acceso concedido.`,
+            `> Conectado a servidores de system404g [ OK ]`,
+            `> Ejecutando protocolo leviathan. Acceso público.`,
             `> Verificación de integridad de núcleo [ OK ]`,
-            `> Inicializando subsistemas de interfaz ...`
+            `> Inicializando subsistemas de interfaz...`,
+            `> Cargando módulos de advertencia legal...`,
         ];
 
+        let currentMessageIndex = 0;
+        let currentLogoLine = 0;
+        let bootTimer; // Para el skip
+
         function updateBootMessages() {
-            const lastCursor = bootMessagesDiv.querySelector('.cursor');
-            if (lastCursor) lastCursor.remove();
+            // Elimina el cursor del mensaje anterior
+            const lastMessage = bootMessagesDiv.lastElementChild;
+            if (lastMessage && lastMessage.querySelector('.cursor')) {
+                lastMessage.querySelector('.cursor').remove();
+            }
 
             if (currentMessageIndex < messages.length) {
                 const message = messages[currentMessageIndex];
-                bootMessagesDiv.innerHTML += `<p class="mb-1">${message}<span class="cursor"></span></p>`;
-                currentMessageIndex++;
-                setTimeout(updateBootMessages, 1500);
+                // Usa un Typewriter simple para los mensajes
+                let charIndex = 0;
+                const p = document.createElement('p');
+                p.className = "mb-1";
+                bootMessagesDiv.appendChild(p);
+                
+                function typeMessage() {
+                    if (charIndex < message.length) {
+                        p.textContent += message.charAt(charIndex);
+                        charIndex++;
+                        setTimeout(typeMessage, 30); // Velocidad rápida
+                    } else {
+                        p.innerHTML += `<span class="cursor"></span>`;
+                        currentMessageIndex++;
+                        // Llama al siguiente mensaje después de una pausa
+                        setTimeout(updateBootMessages, 1200);
+                    }
+                }
+                typeMessage();
             } else if (currentLogoLine < logoLines.length) {
-                asciiLogoDiv.innerHTML += `${logoLines[currentLogoLine]}\n`;
+                // Empieza a construir el logo después de los mensajes
+                let line = logoLines[currentLogoLine];
+                
+                // Aplicar efecto de parpadeo a colaboradores específicos
+                if (line.includes('Lazarus')) {
+                    line = line.replace('[ Industries Lazarus ]', '<span class="blinking-text">[ Industries Lazarus ]</span>');
+                }
+                if (line.includes('CdCars')) {
+                    line = line.replace('[ CdCars ]', '<span class="blinking-text">[ CdCars ]</span>');
+                }
+                if (line.includes('System404G')) {
+                    line = line.replace('[ System404G ]', '<span class="blinking-text">[ System404G ]</span>');
+                }
+                
+                asciiLogoDiv.innerHTML += `${line}\n`;
                 asciiLogoDiv.style.opacity = '1';
                 currentLogoLine++;
-                setTimeout(updateBootMessages, 150);
+
+                // Acelera la construcción del logo
+                setTimeout(updateBootMessages, 50); // Muy rápido para el logo
             }
         }
 
         function animateBootSequence() {
             const startTime = Date.now();
+
             function loop() {
                 const elapsed = Date.now() - startTime;
                 const progress = Math.min(1, elapsed / BOOT_DURATION_MS);
+
+                // Actualiza la barra de carga
                 loadingBar.style.width = `${Math.floor(progress * 100)}%`;
 
                 if (progress < 1) {
-                    requestAnimationFrame(loop);
+                    bootTimer = requestAnimationFrame(loop);
                 } else {
+                    // Finaliza la carga, muestra el mensaje final y transiciona
                     showFinalMessage();
                 }
             }
+
+            // Inicia la animación de mensajes y logo
             updateBootMessages();
+            // Inicia la barra de carga
             loop();
         }
 
         function showFinalMessage() {
-            const lastCursor = bootMessagesDiv.querySelector('.cursor');
-            if (lastCursor) lastCursor.remove();
-            
-            finalMessage.textContent = "Conexión estable. Iniciando protocolo de acceso...";
+            finalMessage.textContent = "Protocolo de Acceso Iniciado. Lea Términos.";
             finalMessage.style.opacity = '1';
 
+            // 1.5 segundos después del final de la carga, transiciona a los términos
             setTimeout(transitionToTerms, 1500);
         }
 
         function transitionToTerms() {
+            // Oculta la pantalla de boot
             bootScreen.style.opacity = '0';
             bootScreen.classList.add('pointer-events-none');
 
+            // Muestra la pantalla de términos
             termsScreen.style.opacity = '1';
             termsScreen.classList.remove('pointer-events-none');
-
-            setupTermsAndConditions();
+            
+            // Carga los términos
+            loadTermsAndConditions();
         }
-
-        // --- PARTE 3: LÓGICA DE TÉRMINOS Y CONDICIONES (CORREGIDA) ---
         
-        const termsContentDiv = document.getElementById('terms-content');
+        // --- PARTE 3: LÓGICA DE TÉRMINOS Y CONDICIONES ---
+        
+        const termsContainer = document.getElementById('terms-container');
         const acceptButton = document.getElementById('accept-button');
-        const termsStatus = document.getElementById('terms-status');
+        const acceptStatus = document.getElementById('accept-status');
 
-        // Texto legal ampliado e integrado con los colaboradores
-        const termsText = `
+        const termsContent = `
 LEA ATENTAMENTE ESTOS TÉRMINOS ANTES DE CONTINUAR.
 
+--------------------------------------------------------------
+
 1. Objeto y Filosofía de la Comunidad
-La comunidad "Protocol Leviathan" es un espacio de libre información, estudio, divulgación y debate enfocado en la Informática, la Ciberseguridad y el Hacking Ético. Nuestro objetivo es la difusión del conocimiento técnico para promover la seguridad digital y la comprensión de los sistemas. **No buscamos crear ni apoyar ninguna actividad maliciosa.**
+La comunidad "Protocol Leviathan" es un espacio de libre información, estudio, divulgación y debate enfocado en la Informática, la Ciberseguridad y el Hacking Ético. Nuestro objetivo es la difusión del conocimiento técnico para promover la seguridad digital y la comprensión de los sistemas. No buscamos crear una comunidad maliciosa.
 
 2. Principios de Uso y Hacking Ético
 El usuario acepta que todo el contenido, herramientas, técnicas y enseñanzas compartidas están destinados exclusivamente a fines educativos, de investigación y de defensa (Hacking Ético).
 El usuario se compromete a:
 - No utilizar la información, el código o las herramientas para dañar sistemas, personas, organizaciones o propiedades sin autorización expresa y documentada de su propietario.
-- Respetar las leyes de la República Argentina con respecto al acceso y modificación de sistemas informáticos, así como toda legislación internacional aplicable.
+- Respetar las leyes de la República Argentina con respecto al acceso y modificación de sistemas informáticos.
 
-3. Exención de Responsabilidad y Limitación Legal (República Argentina)
+3. Exención de Responsabilidad y Limitación Legal (Argentina)
 El creador y distribuidor de esta comunidad, KaliHunter32, opera bajo el principio de la libre información y la neutralidad tecnológica.
-KaliHunter32 y las entidades colaboradoras **NO se hacen responsables del mal uso** que los miembros o terceros puedan dar a las herramientas, conocimientos y enseñanzas impartidas dentro de "Protocol Leviathan". La responsabilidad legal recae única y exclusivamente en el usuario que realiza la acción.
-La comunidad se abstiene de hacerse cargo legalmente de las consecuencias derivadas de las acciones individuales de sus miembros. El usuario reconoce que cualquier acto ilegal que cometa utilizando información de esta web lo hace bajo su propia cuenta y riesgo, y que tales actos están tipificados como delitos en el Código Penal de la Nación Argentina (**Ley 26.388 - Delitos Informáticos**), incluyendo, pero no limitándose a:
-- Violación de correspondencia (Art. 153 C.P.): Acceso indebido a comunicaciones electrónicas o datos restringidos.
-- Acceso ilegítimo a un sistema informático (Art. 153 bis C.P.): El que sin la debida autorización acceda a un sistema o dato informático de acceso restringido.
-- Sabotaje o daño informático (Art. 183 y 184 C.P.): Destrucción, inutilización, daño, borrado o desaparición de datos, documentos, programas o sistemas de computación.
+KaliHunter32 NO se hace responsable del mal uso que los miembros o terceros puedan dar a las herramientas, conocimientos y enseñanzas impartidas dentro de "Protocol Leviathan". La responsabilidad legal recae única y exclusivamente en el usuario que realiza la acción.
+La comunidad se abstiene de hacerse cargo legalmente de las consecuencias derivadas de las acciones individuales de sus miembros. El usuario reconoce que cualquier acto ilegal que cometa utilizando información de esta web lo hace bajo su propia cuenta y riesgo, y que tales actos están tipificados como delitos en el Código Penal de la Nación Argentina (Ley 26.388), incluyendo, pero no limitándose a:
+- Violación de correspondencia (Art. 153 C.P.): El acceso indebido a comunicaciones electrónicas o datos restringidos.
+- Acceso ilegítimo a un sistema informático (Art. 153 bis C.P.): El que sin la debida autorización o excediendo la que posea, acceda a un sistema o dato informático de acceso restringido.
+- Sabotaje o daño informático (Art. 183 y 184 C.P.): El que destruyere, inutilizare, dañare, borrare o hiciere desaparecer datos, documentos, programas o sistemas de computación.
 Al aceptar, el usuario desvincula totalmente a KaliHunter32 y a la comunidad "Protocol Leviathan" de toda consecuencia penal, civil o administrativa que pueda derivarse de su conducta.
 
 4. Moderación y Terminación de la Cuenta
 La comunidad se reserva el derecho de eliminar cualquier contenido o cuenta que promueva o ejecute actividades maliciosas o ilegales sin previo aviso.
 
----
+--------------------------------------------------------------
 
-5. Red de Apoyo y Colaboradores
-
-Este proyecto y plataforma están apoyados por la red de inteligencia y conocimiento de las siguientes comunidades Hacking:
-- <span class="collab-name lazarus">Lazarus</span>
-- <span class="collab-name tflows-v">Tflows V</span>
-- <span class="collab-name cdcards">CdCards</span>
-- <span class="collab-name luniuns-onion">LuniunsOnion</span>
-- <span class="collab-name system404g">System404G</span>
-
-El acceso a esta plataforma confirma que usted ha leído y acepta todos los puntos anteriores.
-        `;
-
-        function setupTermsAndConditions() {
-            // Reemplazamos \n por <br> y aseguramos el formato pre-wrap para que se vea bien
-            const formattedTerms = termsText.trim()
-                .replace(/\n/g, '<br>')
-                .replace(/<span class/g, '</span><span class') // Evita que <br> rompa el span
-                .replace(/class="collab-name/g, 'class="collab-name');
-
-            termsContentDiv.innerHTML = formattedTerms;
-
-            termsContentDiv.addEventListener('scroll', function() {
-                const { scrollTop, scrollHeight, clientHeight } = termsContentDiv;
-                if (scrollHeight - scrollTop <= clientHeight + 1) {
-                    acceptButton.disabled = false;
-                    acceptButton.classList.remove('bg-gray-600', 'cursor-not-allowed', 'shadow-gray-900/50');
-                    acceptButton.classList.add('bg-green-700', 'hover:bg-green-600', 'shadow-green-900/50');
-                    termsStatus.textContent = '¡LECTURA COMPLETA! Presione ACEPTAR para continuar.';
-                    termsStatus.classList.remove('text-red-400');
-                    termsStatus.classList.add('text-green-400');
-                }
-            });
-
-            acceptButton.addEventListener('click', function() {
-                if (!acceptButton.disabled) {
-                    termsStatus.textContent = "> Protocolo de acceso ACEPTADO. Iniciando interfaz principal...";
-                    termsStatus.classList.remove('text-red-400');
-                    termsStatus.classList.add('text-green-400');
-                    
-                    setTimeout(transitionToMainInterface, 1000);
-                }
-            });
-        }
+[ END OF FILE ]`;
         
-        // --- PARTE 4: LÓGICA DE INTERFAZ PRINCIPAL Y ANIMACIÓN DE FONDO ---
+        // Función para cargar los términos usando un efecto de escritura
+        async function loadTermsAndConditions() {
+            // Creamos un efecto de Typewriter simulado para el contenido legal
+            termsContainer.textContent = "";
+            acceptStatus.textContent = "";
+            acceptStatus.style.opacity = '0';
 
-        function transitionToMainInterface() {
-            termsScreen.style.opacity = '0';
-            termsScreen.classList.add('pointer-events-none');
-
-            mainInterfaceScreen.style.opacity = '1';
-            mainInterfaceScreen.classList.remove('pointer-events-none');
+            let charIndex = 0;
+            const delay = 5; // muy rápido
             
-            cancelAnimationFrame(matrixRainId);
-            drawPsychedelicMatrix(); 
-        }
-
-        // Nueva animación de fondo: Matrix Morado/Verde dinámico
-        let frameCount = 0;
-        function drawPsychedelicMatrix() {
-            frameCount++;
-            
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.08)'; 
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.font = fontSize + 'px monospace';
-
-            for (let i = 0; i < drops.length; i++) {
-                const x = i * fontSize;
-                let y = drops[i] * fontSize;
-                const text = characters[Math.floor(Math.random() * characters.length)];
-                
-                // Color de la cola: Oscila entre verde y morado/azul
-                const r = Math.floor(1 + 0.5 * Math.sin(frameCount * 0.05 + i)); 
-                const g = Math.floor(166 + 90 * Math.sin(frameCount * 0.05 + i)); 
-                const b = Math.floor(28 + 220 * Math.cos(frameCount * 0.08 + i)); 
-                ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
-                ctx.fillText(text, x, y);
-
-                // Color de la cabeza: Brillante, con un tono más hacia el cyan/magenta
-                const headColor = `rgb(${Math.floor(150 + 100 * Math.sin(frameCount * 0.03))}, 255, ${Math.floor(150 + 100 * Math.cos(frameCount * 0.03))})`;
-                const headY = (drops[i] - 5) * fontSize;
-                if (headY > 0) {
-                    ctx.fillStyle = headColor; 
-                    ctx.fillText(text, x, headY);
+            function typeTerms() {
+                if (charIndex < termsContent.length) {
+                    termsContainer.textContent += termsContent.charAt(charIndex);
+                    charIndex++;
+                    setTimeout(typeTerms, delay);
                 }
-
-                if (y > canvas.height && Math.random() > 0.98) {
-                    drops[i] = 0;
-                }
-                
-                drops[i]++;
             }
-
-            requestAnimationFrame(drawPsychedelicMatrix);
+            typeTerms();
         }
+
+        // Listener para el botón ACEPTAR
+        acceptButton.addEventListener('click', function() {
+            acceptStatus.classList.remove('text-red-400');
+            acceptStatus.classList.add('text-green-400');
+            acceptStatus.textContent = `> Leyendo y aceptando advertencia legal. Bienvenido.`;
+            acceptStatus.style.opacity = '1';
+            
+            acceptButton.disabled = true;
+            acceptButton.textContent = "ACCESO CONCEDIDO. REDIRIGIENDO...";
+            
+            // Simulación de redirección o inicio de la web principal
+            setTimeout(() => {
+                alert("¡Acceso a Protocolo LEVIATHAN concedido! Aquí iría el contenido principal de la web.");
+                // Aquí podrías redirigir: window.location.href = "/main-page.html";
+            }, 2000);
+        });
 
 
         // Iniciar todo
         window.onload = function () {
-            drawMatrixRain(); 
-            animateBootSequence(); 
+            drawMatrixRain(); // Inicia la lluvia de Matrix inmediatamente
+            animateBootSequence(); // Inicia la secuencia de carga de 10 segundos
         }
     </script>
 </body>
