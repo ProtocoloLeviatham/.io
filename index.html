@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Protocolo LEVIATHAN - Acceso Requerido</title>
+    <title>Protocolo LEVIATHAN - Interfaz Principal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Estilos personalizados para el canvas y la superposición */
+        /* Estilos base (Mantenidos) */
         body {
             background-color: #000;
             overflow: hidden;
@@ -22,8 +22,6 @@
             z-index: 0;
             position: absolute;
         }
-        
-        /* Estilo base para todas las pantallas de superposición */
         .overlay-screen {
             position: fixed;
             top: 0;
@@ -35,25 +33,17 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            color: #0F0; /* Verde brillante */
+            color: #0F0;
             transition: opacity 1s ease-in-out;
             z-index: 10;
-            background: rgba(0, 0, 0, 0.5); /* Oscurece un poco el fondo del matrix */
+            background: rgba(0, 0, 0, 0.5);
         }
-
-        /* Estilo para el logo ASCII */
         #ascii-logo {
             font-family: 'Courier New', Courier, monospace;
             white-space: pre;
             margin: 2rem 0;
             text-shadow: 0 0 5px #0F0;
         }
-
-        /* Efecto de parpadeo (cursor) */
-        @keyframes blink {
-            50% { opacity: 0; }
-        }
-
         .cursor {
             display: inline-block;
             width: 8px;
@@ -61,8 +51,6 @@
             background-color: #0F0;
             animation: blink 1s step-end infinite;
         }
-
-        /* Estilos para el scrollbar temático (Chrome, Safari) */
         .custom-scrollbar::-webkit-scrollbar {
             width: 8px;
         }
@@ -74,9 +62,86 @@
             border-radius: 20px;
             border: 1px solid #0F0;
         }
+
+        /* --- NUEVOS ESTILOS PARA INTERFAZ PRINCIPAL --- */
+        
+        /* Contenedor principal que se superpone al canvas */
+        #mainInterface {
+            background: rgba(0, 0, 0, 0.85); /* Fondo más opaco */
+            padding: 2rem;
+            max-height: 95vh;
+            overflow-y: auto;
+            border: 2px solid #5a00ff; /* Borde morado para el contraste */
+            box-shadow: 0 0 20px rgba(90, 0, 255, 0.7);
+            color: #A0FFA0; /* Un verde más suave para el cuerpo de texto */
+        }
+        
+        /* 1. Animación Glitch para el Título */
+        .glitch {
+            font-family: 'Courier New', monospace;
+            font-size: 3rem;
+            color: #00FF00;
+            position: relative;
+            text-shadow: 0.05em 0 0 #00FF00, -0.05em -0.025em 0 #5A00FF, 0.025em 0.05em 0 #009900;
+            animation: glitch 1.5s infinite;
+        }
+
+        @keyframes glitch {
+            0% { text-shadow: 0.05em 0 0 #00FF00, -0.05em -0.025em 0 #5A00FF, 0.025em 0.05em 0 #009900; transform: translate(0.05em, 0.05em); }
+            14% { text-shadow: 0.05em 0 0 #00FF00, -0.05em -0.025em 0 #5A00FF, 0.025em 0.05em 0 #009900; transform: translate(0.05em, 0.05em); }
+            15% { text-shadow: -0.05em -0.025em 0 #5A00FF, 0.025em 0.05em 0 #009900; transform: translate(-0.025em, -0.05em); }
+            49% { text-shadow: -0.05em -0.025em 0 #5A00FF, 0.025em 0.05em 0 #009900; transform: translate(-0.025em, -0.05em); }
+            50% { text-shadow: 0.05em 0 0 #00FF00, -0.05em -0.025em 0 #5A00FF; transform: translate(0.05em, 0); }
+            99% { text-shadow: 0.05em 0 0 #00FF00, -0.05em -0.025em 0 #5A00FF; transform: translate(0.05em, 0); }
+            100% { text-shadow: 0.05em 0 0 #00FF00, -0.05em -0.025em 0 #5A00FF, 0.025em 0.05em 0 #009900; transform: translate(0.05em, 0.05em); }
+        }
+
+        /* 2. Estilos para los nombres de Colaboradores */
+        .collab-name {
+            display: inline-block;
+            font-family: 'Consolas', monospace;
+            font-weight: bold;
+            padding: 0.2rem 0.5rem;
+            margin: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.3s;
+            cursor: default;
+        }
+
+        .lazarus {
+            color: #FF00FF; /* Magenta */
+            text-shadow: 0 0 5px #FF00FF, 0 0 10px #FF00FF;
+            border: 1px solid #FF00FF;
+        }
+        .tflows-v {
+            color: #FFFF00; /* Amarillo */
+            text-shadow: 0 0 5px #FFFF00, 0 0 10px #FFFF00;
+            border: 1px solid #FFFF00;
+        }
+        .cdcards {
+            color: #00FFFF; /* Cyan */
+            text-shadow: 0 0 5px #00FFFF, 0 0 10px #00FFFF;
+            border: 1px solid #00FFFF;
+        }
+        .luniuns-onion {
+            color: #FFA500; /* Naranja */
+            text-shadow: 0 0 5px #FFA500, 0 0 10px #FFA500;
+            border: 1px solid #FFA500;
+        }
+        .system404g {
+            color: #00FF00; /* Verde puro */
+            text-shadow: 0 0 5px #00FF00, 0 0 10px #00FF00;
+            border: 1px solid #00FF00;
+        }
+        
+        .collab-name:hover {
+            transform: scale(1.05);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
     </style>
     <script>
-        // Configuración de Tailwind para usar la fuente Inter
+        // Configuración de Tailwind (Mantenida)
         tailwind.config = {
             theme: {
                 extend: {
@@ -92,45 +157,109 @@
     <canvas id="matrixCanvas"></canvas>
     
     <div id="bootScreen" class="overlay-screen">
-        <div id="boot-messages" class="text-xl sm:text-2xl font-mono text-left w-full max-w-lg p-4">
-            </div>
-
-        <div id="ascii-logo" class="text-base sm:text-xl opacity-0 transition-opacity duration-1000">
-            </div>
-
+        <div id="boot-messages" class="text-xl sm:text-2xl font-mono text-left w-full max-w-lg p-4"></div>
+        <div id="ascii-logo" class="text-base sm:text-xl opacity-0 transition-opacity duration-1000"></div>
         <div id="loading-bar-container" class="mt-8 w-full max-w-xs h-4 border border-green-500 bg-black">
             <div id="loading-bar" class="h-full bg-green-700 transition-all duration-1000 ease-linear" style="width: 0%;"></div>
         </div>
-
-        <p id="final-message" class="text-2xl sm:text-3xl font-bold mt-8 opacity-0 transition-opacity duration-1000">
-            </p>
+        <p id="final-message" class="text-2xl sm:text-3xl font-bold mt-8 opacity-0 transition-opacity duration-1000"></p>
     </div>
 
     <div id="termsScreen" class="overlay-screen opacity-0 pointer-events-none p-4 sm:p-8">
         <div class="p-8 w-full max-w-2xl h-full max-h-[90vh] bg-gray-900 border-2 border-green-500 shadow-2xl shadow-green-900/50 rounded-lg flex flex-col">
-            
             <h2 class="text-3xl font-bold mb-4 text-green-400 text-center font-mono">
                 PROTOCOLO DE ACCESO: TÉRMINOS Y CONDICIONES
             </h2>
-
-            <div id="terms-content" class="flex-grow overflow-y-scroll p-4 border-t border-b border-green-700 mb-6 font-mono text-sm text-left whitespace-pre-wrap leading-relaxed custom-scrollbar" style="height: 40vh;">
-                </div>
-            
+            <div id="terms-content" class="flex-grow overflow-y-scroll p-4 border-t border-b border-green-700 mb-6 font-mono text-sm text-left whitespace-pre-wrap leading-relaxed custom-scrollbar" style="height: 40vh;"></div>
             <div class="flex flex-col items-center">
                 <p id="terms-status" class="mt-2 mb-4 text-sm font-mono text-red-400 opacity-0 transition-opacity duration-500">
                     Desplácese hasta el final para activar el botón de ACEPTAR.
                 </p>
-
                 <button id="accept-button" class="w-full max-w-sm py-2 bg-gray-600 cursor-not-allowed transition duration-300 text-black font-extrabold rounded-sm shadow-md shadow-gray-900/50" disabled>
                     ACEPTAR Y CONTINUAR <span class="text-xs"> (CMD:ACCEPT)</span>
                 </button>
             </div>
         </div>
     </div>
+    
+    <div id="mainInterfaceScreen" class="overlay-screen opacity-0 pointer-events-none p-4 sm:p-8">
+        <div id="mainInterface" class="w-full max-w-4xl rounded-lg font-mono text-left">
+            
+            <header class="text-center mb-10">
+                <h1 class="glitch text-5xl font-extrabold tracking-widest text-green-400 mb-2">
+                    BIENVENIDOS AVENTUREROS
+                </h1>
+                <p class="text-xl text-purple-400">PROTOCOLO LEVIATHAN :: CONEXIÓN ESTABLECIDA</p>
+                <hr class="border-green-600 mt-4 mb-8">
+            </header>
+
+            <section class="mb-10">
+                <h2 class="text-3xl font-bold text-green-500 mb-4 border-b border-purple-500 pb-2">
+                    // 1.0 DIRECTRICES DE LA COMUNIDAD (CÓDIGO DE ÉTICA)
+                </h2>
+                
+                <p class="text-sm italic mb-4 text-purple-300">
+                    Nuestra base es el **Hacking Ético**. El desvío de estos principios resultará en la exclusión inmediata.
+                </p>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full border border-green-700 text-sm">
+                        <thead class="bg-purple-900/50">
+                            <tr>
+                                <th class="p-3 text-center border-b border-green-700">CÓDIGO</th>
+                                <th class="p-3 text-left border-b border-green-700">PRINCIPIO</th>
+                                <th class="p-3 text-left border-b border-green-700 hidden sm:table-cell">DETALLE Y CONSECUENCIA</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="hover:bg-gray-800/50">
+                                <td class="p-3 border-b border-green-700 text-center text-purple-400">0x01</td>
+                                <td class="p-3 border-b border-green-700 text-yellow-400">Consentimiento</td>
+                                <td class="p-3 border-b border-green-700 hidden sm:table-cell">Nunca pruebe sistemas o acceda a información sin el permiso explícito, documentado y legal de su propietario.</td>
+                            </tr>
+                            <tr class="hover:bg-gray-800/50">
+                                <td class="p-3 border-b border-green-700 text-center text-purple-400">0x02</td>
+                                <td class="p-3 border-b border-green-700 text-yellow-400">Legalidad</td>
+                                <td class="p-3 border-b border-green-700 hidden sm:table-cell">Debe adherirse estrictamente a las leyes locales e internacionales (específicamente la Ley 26.388 en Argentina).</td>
+                            </tr>
+                            <tr class="hover:bg-gray-800/50">
+                                <td class="p-3 border-b border-green-700 text-center text-purple-400">0x03</td>
+                                <td class="p-3 border-b border-green-700 text-yellow-400">Propósito Educativo</td>
+                                <td class="p-3 border-b border-green-700 hidden sm:table-cell">El objetivo principal de la información compartida es la defensa, la investigación y la mejora de la ciberseguridad global.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            
+            <section class="mt-10">
+                <h2 class="text-3xl font-bold text-green-500 mb-4 border-b border-purple-500 pb-2">
+                    // 2.0 RED DE APOYO & COLABORADORES
+                </h2>
+                
+                <p class="mb-6 text-sm">
+                    Esta web así como este proyecto está apoyado por 5 comunidades Hacking conocidas:
+                </p>
+
+                <div class="flex flex-wrap justify-center sm:justify-start gap-4 text-lg">
+                    <span class="collab-name lazarus">LAZARUS</span>
+                    <span class="collab-name tflows-v">TFLOWS V</span>
+                    <span class="collab-name cdcards">CDCARDZ</span>
+                    <span class="collab-name luniuns-onion">LUNIUNSONION</span>
+                    <span class="collab-name system404g">SYSTEM404G</span>
+                </div>
+            </section>
+
+            <footer class="mt-10 text-center pt-5 border-t border-green-700/50 text-xs text-gray-500">
+                <p>PROTOCOLO LEVIATHAN v0.9.1 | Desarrollado por KaliHunter32. Código Abierto con Restricciones Éticas.</p>
+            </footer>
+
+        </div>
+    </div>
+
 
     <script>
-        // --- PARTE 1: LÓGICA DEL MATRIX RAIN (MEJORADA) ---
-
+        // --- PARTE 1: LÓGICA DEL MATRIX RAIN (Mantenida) ---
         const canvas = document.getElementById('matrixCanvas');
         const ctx = canvas.getContext('2d');
         const katakana = 'アァカサタナハマヤラワガザダバパヰヱヲンヴヵヶ' +
@@ -139,6 +268,7 @@
         const fontSize = 16;
         let columns = 0;
         let drops = [];
+        let matrixRainId = null; // ID para detener la animación original
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
@@ -155,48 +285,42 @@
         function drawMatrixRain() {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; 
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-
             ctx.font = fontSize + 'px monospace';
 
             for (let i = 0; i < drops.length; i++) {
                 const x = i * fontSize;
                 let y = drops[i] * fontSize;
-
                 const text = characters[Math.floor(Math.random() * characters.length)];
                 
-                // Color para la cola (Verde estándar)
                 ctx.fillStyle = '#01a61c'; 
                 ctx.fillText(text, x, y);
 
-                // Color para la cabeza (Verde brillante)
                 const headY = (drops[i] - 5) * fontSize;
                 if (headY > 0) {
                     ctx.fillStyle = '#C0FFC0'; 
                     ctx.fillText(text, x, headY);
                 }
 
-                // Reinicia la gota
                 if (y > canvas.height && Math.random() > 0.975) {
                     drops[i] = 0;
                 }
                 
                 drops[i]++;
             }
-
-            requestAnimationFrame(drawMatrixRain);
+            matrixRainId = requestAnimationFrame(drawMatrixRain);
         }
 
-        // --- PARTE 2: LÓGICA DE LA SECUENCIA DE BOOT Y TRANSICIÓN ---
+        // --- PARTE 2: LÓGICA DE BOOT Y TRANSICIÓN (Mantenida/Modificada) ---
 
         const BOOT_DURATION_MS = 10000;
         const bootScreen = document.getElementById('bootScreen');
         const termsScreen = document.getElementById('termsScreen');
+        const mainInterfaceScreen = document.getElementById('mainInterfaceScreen'); // Nuevo elemento
         const bootMessagesDiv = document.getElementById('boot-messages');
         const asciiLogoDiv = document.getElementById('ascii-logo');
         const loadingBar = document.getElementById('loading-bar');
         const finalMessage = document.getElementById('final-message');
 
-        // NUEVO LOGO
         const logoLines = [
             "[ Iniciando Codificación ]",
             "",
@@ -227,7 +351,6 @@
         let currentLogoLine = 0;
 
         function updateBootMessages() {
-            // Asegura que el cursor solo esté en el último mensaje
             const lastCursor = bootMessagesDiv.querySelector('.cursor');
             if (lastCursor) lastCursor.remove();
 
@@ -235,76 +358,58 @@
                 const message = messages[currentMessageIndex];
                 bootMessagesDiv.innerHTML += `<p class="mb-1">${message}<span class="cursor"></span></p>`;
                 currentMessageIndex++;
-                
-                // Muestra un mensaje cada 1.5 segundos
                 setTimeout(updateBootMessages, 1500);
             } else if (currentLogoLine < logoLines.length) {
-                // Empieza a construir el logo después de los mensajes
                 asciiLogoDiv.innerHTML += `${logoLines[currentLogoLine]}\n`;
                 asciiLogoDiv.style.opacity = '1';
                 currentLogoLine++;
-
-                // Acelera la construcción del logo
                 setTimeout(updateBootMessages, 150);
             }
         }
 
         function animateBootSequence() {
             const startTime = Date.now();
-
             function loop() {
                 const elapsed = Date.now() - startTime;
                 const progress = Math.min(1, elapsed / BOOT_DURATION_MS);
-
-                // Actualiza la barra de carga
                 loadingBar.style.width = `${Math.floor(progress * 100)}%`;
 
                 if (progress < 1) {
                     requestAnimationFrame(loop);
                 } else {
-                    // Finaliza la carga, muestra el mensaje final y transiciona
                     showFinalMessage();
                 }
             }
-
-            // Inicia la animación de mensajes y logo
             updateBootMessages();
-            // Inicia la barra de carga
             loop();
         }
 
         function showFinalMessage() {
-            // Elimina el cursor final de los mensajes de boot
             const lastCursor = bootMessagesDiv.querySelector('.cursor');
             if (lastCursor) lastCursor.remove();
             
             finalMessage.textContent = "Conexión estable. Iniciando protocolo de acceso...";
             finalMessage.style.opacity = '1';
 
-            // 1.5 segundos después del final de la carga, transiciona a T&C
             setTimeout(transitionToTerms, 1500);
         }
 
         function transitionToTerms() {
-            // Oculta la pantalla de boot
             bootScreen.style.opacity = '0';
             bootScreen.classList.add('pointer-events-none');
 
-            // Muestra la pantalla de T&C
             termsScreen.style.opacity = '1';
             termsScreen.classList.remove('pointer-events-none');
 
-            // Inicia la lógica de T&C
             setupTermsAndConditions();
         }
 
-        // --- PARTE 3: LÓGICA DE TÉRMINOS Y CONDICIONES ---
+        // --- PARTE 3: LÓGICA DE TÉRMINOS Y CONDICIONES (Modificada para la nueva transición) ---
         
         const termsContentDiv = document.getElementById('terms-content');
         const acceptButton = document.getElementById('accept-button');
         const termsStatus = document.getElementById('terms-status');
 
-        // Texto de los Términos y Condiciones (se usa el texto proporcionado)
         const termsText = `
 LEA ATENTAMENTE ESTOS TÉRMINOS ANTES DE CONTINUAR.
 
@@ -332,15 +437,10 @@ La comunidad se reserva el derecho de eliminar cualquier contenido o cuenta que 
 
         function setupTermsAndConditions() {
             termsContentDiv.textContent = termsText.trim();
-            termsStatus.style.opacity = '1';
 
-            // Función para verificar si el usuario llegó al final del scroll
             termsContentDiv.addEventListener('scroll', function() {
                 const { scrollTop, scrollHeight, clientHeight } = termsContentDiv;
-
-                // Margen de 1 píxel para asegurar que funciona en todos los navegadores
                 if (scrollHeight - scrollTop <= clientHeight + 1) {
-                    // El usuario llegó al final
                     acceptButton.disabled = false;
                     acceptButton.classList.remove('bg-gray-600', 'cursor-not-allowed', 'shadow-gray-900/50');
                     acceptButton.classList.add('bg-green-700', 'hover:bg-green-600', 'shadow-green-900/50');
@@ -350,26 +450,82 @@ La comunidad se reserva el derecho de eliminar cualquier contenido o cuenta que 
                 }
             });
 
-            // Lógica al hacer clic en ACEPTAR
             acceptButton.addEventListener('click', function() {
                 if (!acceptButton.disabled) {
                     termsStatus.textContent = "> Protocolo de acceso ACEPTADO. Iniciando interfaz principal...";
                     termsStatus.classList.remove('text-red-400');
                     termsStatus.classList.add('text-green-400');
                     
-                    // Aquí es donde harías la transición a la página principal de la comunidad
-                    setTimeout(() => {
-                        alert("¡Acceso concedido! Redirigiendo a la Interfaz Principal.");
-                        // window.location.href = "/main_interface.html"; // Descomenta esto para redireccionar
-                    }, 1000);
+                    // Transición a la interfaz principal
+                    setTimeout(transitionToMainInterface, 1000);
                 }
             });
         }
+        
+        // --- PARTE 4: LÓGICA DE INTERFAZ PRINCIPAL Y ANIMACIÓN DE FONDO ---
+
+        function transitionToMainInterface() {
+            // Oculta la pantalla de T&C
+            termsScreen.style.opacity = '0';
+            termsScreen.classList.add('pointer-events-none');
+
+            // Muestra la pantalla principal
+            mainInterfaceScreen.style.opacity = '1';
+            mainInterfaceScreen.classList.remove('pointer-events-none');
+            
+            // Detiene la lluvia de Matrix original (verde)
+            cancelAnimationFrame(matrixRainId);
+            
+            // Inicia la nueva animación de fondo (Matrix morado/verde)
+            drawPsychedelicMatrix(); 
+        }
+
+        // Nueva animación de fondo: Matrix Morado/Verde dinámico
+        let frameCount = 0;
+        function drawPsychedelicMatrix() {
+            frameCount++;
+            
+            // Fondo semitransparente para el efecto de estela
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.08)'; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const x = i * fontSize;
+                let y = drops[i] * fontSize;
+                const text = characters[Math.floor(Math.random() * characters.length)];
+                
+                // Color de la cola: Oscila entre verde (01a61c) y morado (5a00ff)
+                const r = Math.floor(1 + 0.5 * Math.sin(frameCount * 0.05 + i)); // Pequeña variación de rojo
+                const g = Math.floor(166 + 90 * Math.sin(frameCount * 0.05 + i)); // Más verde
+                const b = Math.floor(28 + 220 * Math.cos(frameCount * 0.08 + i)); // Azul/Morado
+                ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+                ctx.fillText(text, x, y);
+
+                // Color de la cabeza: Brillante, con un tono más hacia el cyan/magenta
+                const headColor = `rgb(${Math.floor(150 + 100 * Math.sin(frameCount * 0.03))}, 255, ${Math.floor(150 + 100 * Math.cos(frameCount * 0.03))})`;
+                const headY = (drops[i] - 5) * fontSize;
+                if (headY > 0) {
+                    ctx.fillStyle = headColor; 
+                    ctx.fillText(text, x, headY);
+                }
+
+                if (y > canvas.height && Math.random() > 0.98) {
+                    drops[i] = 0;
+                }
+                
+                drops[i]++;
+            }
+
+            requestAnimationFrame(drawPsychedelicMatrix);
+        }
+
 
         // Iniciar todo
         window.onload = function () {
-            drawMatrixRain(); // Inicia la lluvia de Matrix inmediatamente
-            animateBootSequence(); // Inicia la secuencia de carga de 10 segundos
+            drawMatrixRain(); 
+            animateBootSequence(); 
         }
     </script>
 </body>
