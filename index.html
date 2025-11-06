@@ -1,311 +1,312 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LEVIATHAM</title>
-    **<link rel="icon" type="image/jpeg" href="miniatura.jpeg">**
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Estilos personalizados para el canvas y la superposición */
-        body {
-            background-color: #000;
-            overflow: hidden;
-            height: 100vh;
-            width: 100vw;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        #matrixCanvas {
-            display: block;
-            z-index: 0;
-            position: absolute;
-        }
-        
-        /* Estilo base para todas las pantallas de superposición */
-        .overlay-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: #0F0; /* Verde brillante */
-            transition: opacity 1s ease-in-out;
-            z-index: 10;
-            background: rgba(0, 0, 0, 0.5); /* Oscurece un poco el fondo del matrix */
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEVIATHAM</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilos personalizados para el canvas y la superposición */
+        body {
+            background-color: #000;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #matrixCanvas {
+            display: block;
+            z-index: 0;
+            position: absolute;
+        }
+        
+        /* Estilo base para todas las pantallas de superposición */
+        .overlay-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #0F0; /* Verde brillante */
+            transition: opacity 1s ease-in-out;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.5); /* Oscurece un poco el fondo del matrix */
+        }
 
-        /* Estilo para el logo ASCII */
-        #ascii-logo {
-            font-family: 'Courier New', Courier, monospace;
-            white-space: pre;
-            margin: 2rem 0;
-            text-shadow: 0 0 5px #0F0;
-        }
+        /* Estilo para el logo ASCII */
+        #ascii-logo {
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre;
+            margin: 2rem 0;
+            text-shadow: 0 0 5px #0F0;
+        }
 
-        /* Efecto de parpadeo (cursor) */
-        @keyframes blink {
-            50% { opacity: 0; }
-        }
+        /* Efecto de parpadeo (cursor) */
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
 
-        .cursor {
-            display: inline-block;
-            width: 8px;
-            height: 1.2em;
-            background-color: #0F0;
-            animation: blink 1s step-end infinite;
-        }
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 1.2em;
+            background-color: #0F0;
+            animation: blink 1s step-end infinite;
+        }
 
-        /* Estilos para el scrollbar temático (Chrome, Safari) */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #000;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background-color: #053b05;
-            border-radius: 20px;
-            border: 1px solid #0F0;
-        }
-    </style>
-    <script>
-        // Configuración de Tailwind para usar la fuente Inter
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                }
-            }
-        }
-    </script>
+        /* Estilos para el scrollbar temático (Chrome, Safari) */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #000;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #053b05;
+            border-radius: 20px;
+            border: 1px solid #0F0;
+        }
+    </style>
+    <script>
+        // Configuración de Tailwind para usar la fuente Inter
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
 </head>
 <body class="font-sans">
-    <canvas id="matrixCanvas"></canvas>
-    
-    <div id="bootScreen" class="overlay-screen">
-        <div id="boot-messages" class="text-xl sm:text-2xl font-mono text-left w-full max-w-lg p-4">
-            </div>
+    <canvas id="matrixCanvas"></canvas>
+    
+    <div id="bootScreen" class="overlay-screen">
+        <div id="boot-messages" class="text-xl sm:text-2xl font-mono text-left w-full max-w-lg p-4">
+            </div>
 
-        <div id="ascii-logo" class="text-base sm:text-xl opacity-0 transition-opacity duration-1000">
-            </div>
+        <div id="ascii-logo" class="text-base sm:text-xl opacity-0 transition-opacity duration-1000">
+            </div>
 
-        <div id="loading-bar-container" class="mt-8 w-full max-w-xs h-4 border border-green-500 bg-black">
-            <div id="loading-bar" class="h-full bg-green-700 transition-all duration-1000 ease-linear" style="width: 0%;"></div>
-        </div>
+        <div id="loading-bar-container" class="mt-8 w-full max-w-xs h-4 border border-green-500 bg-black">
+            <div id="loading-bar" class="h-full bg-green-700 transition-all duration-1000 ease-linear" style="width: 0%;"></div>
+        </div>
 
-        <p id="final-message" class="text-2xl sm:text-3xl font-bold mt-8 opacity-0 transition-opacity duration-1000">
-            </p>
-    </div>
+        <p id="final-message" class="text-2xl sm:text-3xl font-bold mt-8 opacity-0 transition-opacity duration-1000">
+            </p>
+    </div>
 
-    <div id="termsScreen" class="overlay-screen opacity-0 pointer-events-none p-4 sm:p-8">
-        <div class="p-8 w-full max-w-2xl h-full max-h-[90vh] bg-gray-900 border-2 border-green-500 shadow-2xl shadow-green-900/50 rounded-lg flex flex-col">
-            
-            <h2 class="text-3xl font-bold mb-4 text-green-400 text-center font-mono">
-                PROTOCOLO DE ACCESO: TÉRMINOS Y CONDICIONES
-            </h2>
+    <div id="termsScreen" class="overlay-screen opacity-0 pointer-events-none p-4 sm:p-8">
+        <div class="p-8 w-full max-w-2xl h-full max-h-[90vh] bg-gray-900 border-2 border-green-500 shadow-2xl shadow-green-900/50 rounded-lg flex flex-col">
+            
+            <h2 class="text-3xl font-bold mb-4 text-green-400 text-center font-mono">
+                PROTOCOLO DE ACCESO: TÉRMINOS Y CONDICIONES
+            </h2>
 
-            <div id="terms-content" class="flex-grow overflow-y-scroll p-4 border-t border-b border-green-700 mb-6 font-mono text-sm text-left whitespace-pre-wrap leading-relaxed custom-scrollbar" style="height: 40vh;">
-                </div>
-            
-            <div class="flex flex-col items-center">
-                <p id="terms-status" class="mt-2 mb-4 text-sm font-mono text-red-400 opacity-0 transition-opacity duration-500">
-                    Desplácese hasta el final para activar el botón de ACEPTAR.
-                </p>
+            <div id="terms-content" class="flex-grow overflow-y-scroll p-4 border-t border-b border-green-700 mb-6 font-mono text-sm text-left whitespace-pre-wrap leading-relaxed custom-scrollbar" style="height: 40vh;">
+                </div>
+            
+            <div class="flex flex-col items-center">
+                <p id="terms-status" class="mt-2 mb-4 text-sm font-mono text-red-400 opacity-0 transition-opacity duration-500">
+                    Desplácese hasta el final para activar el botón de ACEPTAR.
+                </p>
 
-                <button id="accept-button" class="w-full max-w-sm py-2 bg-gray-600 cursor-not-allowed transition duration-300 text-black font-extrabold rounded-sm shadow-md shadow-gray-900/50" disabled>
-                    ACEPTAR Y CONTINUAR <span class="text-xs"> (CMD:ACCEPT)</span>
-                </button>
-            </div>
-    </div>
+                <button id="accept-button" class="w-full max-w-sm py-2 bg-gray-600 cursor-not-allowed transition duration-300 text-black font-extrabold rounded-sm shadow-md shadow-gray-900/50" disabled>
+                    ACEPTAR Y CONTINUAR <span class="text-xs"> (CMD:ACCEPT)</span>
+                </button>
+            </div>
+        </div>
+    </div>
 
-    <script>
-        // --- PARTE 1: LÓGICA DEL MATRIX RAIN (MEJORADA) ---
+    <script>
+        // --- PARTE 1: LÓGICA DEL MATRIX RAIN (MEJORADA) ---
 
-        const canvas = document.getElementById('matrixCanvas');
-        const ctx = canvas.getContext('2d');
-        const katakana = 'アァカサタナハマヤラワガザダバパヰヱヲンヴヵヶ' +
-                         '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const characters = katakana.split('');
-        const fontSize = 16;
-        let columns = 0;
-        let drops = [];
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+        const katakana = 'アァカサタナハマヤラワガザダバパヰヱヲンヴヵヶ' +
+                         '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const characters = katakana.split('');
+        const fontSize = 16;
+        let columns = 0;
+        let drops = [];
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            columns = Math.floor(canvas.width / fontSize);
-            drops = [];
-            for (let i = 0; i < columns; i++) {
-                drops[i] = Math.floor(Math.random() * canvas.height / fontSize); 
-            }
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            columns = Math.floor(canvas.width / fontSize);
+            drops = [];
+            for (let i = 0; i < columns; i++) {
+                drops[i] = Math.floor(Math.random() * canvas.height / fontSize); 
+            }
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
 
-        function drawMatrixRain() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; 
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        function drawMatrixRain() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            ctx.font = fontSize + 'px monospace';
+            ctx.font = fontSize + 'px monospace';
 
-            for (let i = 0; i < drops.length; i++) {
-                const x = i * fontSize;
-                let y = drops[i] * fontSize;
+            for (let i = 0; i < drops.length; i++) {
+                const x = i * fontSize;
+                let y = drops[i] * fontSize;
 
-                const text = characters[Math.floor(Math.random() * characters.length)];
-                
-                // Color para la cola (Verde estándar)
-                ctx.fillStyle = '#01a61c'; 
-                ctx.fillText(text, x, y);
+                const text = characters[Math.floor(Math.random() * characters.length)];
+                
+                // Color para la cola (Verde estándar)
+                ctx.fillStyle = '#01a61c'; 
+                ctx.fillText(text, x, y);
 
-                // Color para la cabeza (Verde brillante)
-                const headY = (drops[i] - 5) * fontSize;
-                if (headY > 0) {
-                    ctx.fillStyle = '#C0FFC0'; 
-                    ctx.fillText(text, x, headY);
-                }
+                // Color para la cabeza (Verde brillante)
+                const headY = (drops[i] - 5) * fontSize;
+                if (headY > 0) {
+                    ctx.fillStyle = '#C0FFC0'; 
+                    ctx.fillText(text, x, headY);
+                }
 
-                // Reinicia la gota
-                if (y > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-                
-                drops[i]++;
-            }
+                // Reinicia la gota
+                if (y > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                
+                drops[i]++;
+            }
 
-            requestAnimationFrame(drawMatrixRain);
-        }
+            requestAnimationFrame(drawMatrixRain);
+        }
 
-        // --- PARTE 2: LÓGICA DE LA SECUENCIA DE BOOT Y TRANSICIÓN ---
+        // --- PARTE 2: LÓGICA DE LA SECUENCIA DE BOOT Y TRANSICIÓN ---
 
-        const BOOT_DURATION_MS = 10000;
-        const bootScreen = document.getElementById('bootScreen');
-        const termsScreen = document.getElementById('termsScreen');
-        const bootMessagesDiv = document.getElementById('boot-messages');
-        const asciiLogoDiv = document.getElementById('ascii-logo');
-        const loadingBar = document.getElementById('loading-bar');
-        const finalMessage = document.getElementById('final-message');
+        const BOOT_DURATION_MS = 10000;
+        const bootScreen = document.getElementById('bootScreen');
+        const termsScreen = document.getElementById('termsScreen');
+        const bootMessagesDiv = document.getElementById('boot-messages');
+        const asciiLogoDiv = document.getElementById('ascii-logo');
+        const loadingBar = document.getElementById('loading-bar');
+        const finalMessage = document.getElementById('final-message');
 
-        // NUEVO LOGO
-        const logoLines = [
-            "[ Iniciando Codificación ]",
-            "",
-            "                     .'.. /|",
-            "                    / |  //",
-            "                 _.'./.'./",
-            "                ( LEVIATHAN )",
-            "                 \\_`\\_`\\_/",
-            "                   / / /",
-            "                  | | |",
-            "                  \\_/",
-            "",
-            "                [ Status: Online ]",
-            "",
-            "[ Imdustrias Lazarus ]",
-            "",
-            "                       [ KaliHunter32 ]"
-        ];
+        // NUEVO LOGO
+        const logoLines = [
+            "[ Iniciando Codificación ]",
+            "",
+            "                     .'.. /|",
+            "                    / |  //",
+            "                 _.'./.'./",
+            "                ( LEVIATHAN )",
+            "                 \\_`\\_`\\_/",
+            "                   / / /",
+            "                  | | |",
+            "                  \\_/",
+            "",
+            "                [ Status: Online ]",
+            "",
+            "[ Imdustrias Lazarus ]",
+            "",
+            "                       [ KaliHunter32 ]"
+        ];
 
-        const messages = [
-            `> Conectado a servidores de system404G`,
-            `> Ejecutando protocolo leviatham. Acceso concedido.`,
-            `> Verificando terminal [ OK ]`,
-            `> Inicializando subsistemas de interfaz ...`
-        ];
+        const messages = [
+            `> Conectado a servidores de system404G`,
+            `> Ejecutando protocolo leviatham. Acceso concedido.`,
+            `> Verificando terminal [ OK ]`,
+            `> Inicializando subsistemas de interfaz ...`
+        ];
 
-        let currentMessageIndex = 0;
-        let currentLogoLine = 0;
+        let currentMessageIndex = 0;
+        let currentLogoLine = 0;
 
-        function updateBootMessages() {
-            // Asegura que el cursor solo esté en el último mensaje
-            const lastCursor = bootMessagesDiv.querySelector('.cursor');
-            if (lastCursor) lastCursor.remove();
+        function updateBootMessages() {
+            // Asegura que el cursor solo esté en el último mensaje
+            const lastCursor = bootMessagesDiv.querySelector('.cursor');
+            if (lastCursor) lastCursor.remove();
 
-            if (currentMessageIndex < messages.length) {
-                const message = messages[currentMessageIndex];
-                bootMessagesDiv.innerHTML += `<p class="mb-1">${message}<span class="cursor"></span></p>`;
-                currentMessageIndex++;
-                
-                // Muestra un mensaje cada 1.5 segundos
-                setTimeout(updateBootMessages, 1500);
-            } else if (currentLogoLine < logoLines.length) {
-                // Empieza a construir el logo después de los mensajes
-                asciiLogoDiv.innerHTML += `${logoLines[currentLogoLine]}\n`;
-                asciiLogoDiv.style.opacity = '1';
-                currentLogoLine++;
+            if (currentMessageIndex < messages.length) {
+                const message = messages[currentMessageIndex];
+                bootMessagesDiv.innerHTML += `<p class="mb-1">${message}<span class="cursor"></span></p>`;
+                currentMessageIndex++;
+                
+                // Muestra un mensaje cada 1.5 segundos
+                setTimeout(updateBootMessages, 1500);
+            } else if (currentLogoLine < logoLines.length) {
+                // Empieza a construir el logo después de los mensajes
+                asciiLogoDiv.innerHTML += `${logoLines[currentLogoLine]}\n`;
+                asciiLogoDiv.style.opacity = '1';
+                currentLogoLine++;
 
-                // Acelera la construcción del logo
-                setTimeout(updateBootMessages, 150);
-            }
-        }
+                // Acelera la construcción del logo
+                setTimeout(updateBootMessages, 150);
+            }
+        }
 
-        function animateBootSequence() {
-            const startTime = Date.now();
+        function animateBootSequence() {
+            const startTime = Date.now();
 
-            function loop() {
-                const elapsed = Date.now() - startTime;
-                const progress = Math.min(1, elapsed / BOOT_DURATION_MS);
+            function loop() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(1, elapsed / BOOT_DURATION_MS);
 
-                // Actualiza la barra de carga
-                loadingBar.style.width = `${Math.floor(progress * 100)}%`;
+                // Actualiza la barra de carga
+                loadingBar.style.width = `${Math.floor(progress * 100)}%`;
 
-                if (progress < 1) {
-                    requestAnimationFrame(loop);
-                } else {
-                    // Finaliza la carga, muestra el mensaje final y transiciona
-                    showFinalMessage();
-                }
-            }
+                if (progress < 1) {
+                    requestAnimationFrame(loop);
+                } else {
+                    // Finaliza la carga, muestra el mensaje final y transiciona
+                    showFinalMessage();
+                }
+            }
 
-            // Inicia la animación de mensajes y logo
-            updateBootMessages();
-            // Inicia la barra de carga
-            loop();
-        }
+            // Inicia la animación de mensajes y logo
+            updateBootMessages();
+            // Inicia la barra de carga
+            loop();
+        }
 
-        function showFinalMessage() {
-            // Elimina el cursor final de los mensajes de boot
-            const lastCursor = bootMessagesDiv.querySelector('.cursor');
-            if (lastCursor) lastCursor.remove();
-            
-            finalMessage.textContent = "Conexión estable. Iniciando protocolo de acceso...";
-            finalMessage.style.opacity = '1';
+        function showFinalMessage() {
+            // Elimina el cursor final de los mensajes de boot
+            const lastCursor = bootMessagesDiv.querySelector('.cursor');
+            if (lastCursor) lastCursor.remove();
+            
+            finalMessage.textContent = "Conexión estable. Iniciando protocolo de acceso...";
+            finalMessage.style.opacity = '1';
 
-            // 1.5 segundos después del final de la carga, transiciona a T&C
-            setTimeout(transitionToTerms, 1500);
-        }
+            // 1.5 segundos después del final de la carga, transiciona a T&C
+            setTimeout(transitionToTerms, 1500);
+        }
 
-        function transitionToTerms() {
-            // Oculta la pantalla de boot
-            bootScreen.style.opacity = '0';
-            bootScreen.classList.add('pointer-events-none');
+        function transitionToTerms() {
+            // Oculta la pantalla de boot
+            bootScreen.style.opacity = '0';
+            bootScreen.classList.add('pointer-events-none');
 
-            // Muestra la pantalla de T&C
-            termsScreen.style.opacity = '1';
-            termsScreen.classList.remove('pointer-events-none');
+            // Muestra la pantalla de T&C
+            termsScreen.style.opacity = '1';
+            termsScreen.classList.remove('pointer-events-none');
 
-            // Inicia la lógica de T&C
-            setupTermsAndConditions();
-        }
+            // Inicia la lógica de T&C
+            setupTermsAndConditions();
+        }
 
-        // --- PARTE 3: LÓGICA DE TÉRMINOS Y CONDICIONES ---
-        
-        const termsContentDiv = document.getElementById('terms-content');
-        const acceptButton = document.getElementById('accept-button');
-        const termsStatus = document.getElementById('terms-status');
+        // --- PARTE 3: LÓGICA DE TÉRMINOS Y CONDICIONES ---
+        
+        const termsContentDiv = document.getElementById('terms-content');
+        const acceptButton = document.getElementById('accept-button');
+        const termsStatus = document.getElementById('terms-status');
 
-        // Texto de los Términos y Condiciones (se usa el texto proporcionado)
-        const termsText = `
+        // Texto de los Términos y Condiciones (se usa el texto proporcionado)
+        const termsText = `
 LEA ATENTAMENTE ESTOS TÉRMINOS ANTES DE CONTINUAR.
 
 1. Objeto y Filosofía de la Comunidad
@@ -315,7 +316,7 @@ La comunidad "Protocol Leviathan" es un espacio de libre información, estudio, 
 2. Principios de Uso y Hacking Ético
 
 El usuario acepta que todo el contenido, herramientas, técnicas y enseñanzas compartidas están destinados exclusivamente a fines educativos, de investigación y de defensa (Hacking Ético).
-El usuario se compromete a: 
+El usuario se compromete a: 
 
 - No utilizar la información, el código o las herramientas para dañar sistemas, personas, organizaciones o propiedades sin autorización expresa y documentada de su propietario.
 
@@ -325,7 +326,7 @@ El usuario se compromete a: 
 
 El creador y distribuidor de esta comunidad, KaliHunter32, opera bajo el principio de la libre información y la neutralidad tecnológica.
 KaliHunter32 NO se hace responsable del mal uso que los miembros o terceros puedan dar a las herramientas, conocimientos y enseñanzas impartidas dentro de "Protocol Leviathan". La responsabilidad legal recae única y exclusivamente en el usuario que realiza la acción.
-La comunidad se abstiene de hacerse cargo legalmente de las consecuencias derivadas de las acciones individuales de sus miembros. 
+La comunidad se abstiene de hacerse cargo legalmente de las consecuencias derivadas de las acciones individuales de sus miembros. 
 El usuario reconoce que cualquier acto ilegal que cometa utilizando información de esta web lo hace bajo su propia cuenta y riesgo, y que tales actos están tipificados como delitos en el Código Penal de la Nación Argentina (Ley 26.388), incluyendo, pero no limitándose a:
 
 - Violación de correspondencia (Art. 153 C.P.): El acceso indebido a comunicaciones electrónicas o datos restringidos.
@@ -338,29 +339,29 @@ Al aceptar, el usuario desvincula totalmente a KaliHunter32 y a la comunidad "Pr
 4. Moderación y Terminación de la Cuenta
 
 La comunidad se reserva el derecho de eliminar cualquier contenido o cuenta que promueva o ejecute actividades maliciosas o ilegales sin previo aviso.
-        `;
+        `;
 
-        function setupTermsAndConditions() {
-            termsContentDiv.textContent = termsText.trim();
-            termsStatus.style.opacity = '1';
+        function setupTermsAndConditions() {
+            termsContentDiv.textContent = termsText.trim();
+            termsStatus.style.opacity = '1';
 
-            // Función para verificar si el usuario llegó al final del scroll
-            termsContentDiv.addEventListener('scroll', function() {
-                const { scrollTop, scrollHeight, clientHeight } = termsContentDiv;
+            // Función para verificar si el usuario llegó al final del scroll
+            termsContentDiv.addEventListener('scroll', function() {
+                const { scrollTop, scrollHeight, clientHeight } = termsContentDiv;
 
-                // Margen de 1 píxel para asegurar que funciona en todos los navegadores
-                if (scrollHeight - scrollTop <= clientHeight + 1) {
-                    // El usuario llegó al final
-                    acceptButton.disabled = false;
-                    acceptButton.classList.remove('bg-gray-600', 'cursor-not-allowed', 'shadow-gray-900/50');
-                    acceptButton.classList.add('bg-green-700', 'hover:bg-green-600', 'shadow-green-900/50');
-                    termsStatus.textContent = '¡LECTURA COMPLETA! Presione ACEPTAR para continuar.';
-                    termsStatus.classList.remove('text-red-400');
-                    termsStatus.classList.add('text-green-400');
-                }
-            });
+                // Margen de 1 píxel para asegurar que funciona en todos los navegadores
+                if (scrollHeight - scrollTop <= clientHeight + 1) {
+                    // El usuario llegó al final
+                    acceptButton.disabled = false;
+                    acceptButton.classList.remove('bg-gray-600', 'cursor-not-allowed', 'shadow-gray-900/50');
+                    acceptButton.classList.add('bg-green-700', 'hover:bg-green-600', 'shadow-green-900/50');
+                    termsStatus.textContent = '¡LECTURA COMPLETA! Presione ACEPTAR para continuar.';
+                    termsStatus.classList.remove('text-red-400');
+                    termsStatus.classList.add('text-green-400');
+                }
+            });
 
-           // Lógica al hacer clic en ACEPTAR
+           // Lógica al hacer clic en ACEPTAR
             acceptButton.addEventListener('click', function() {
                 if (!acceptButton.disabled) {
                     termsStatus.textContent = "> Protocolo de acceso ACEPTADO. Iniciando interfaz principal...";
@@ -384,6 +385,3 @@ La comunidad se reserva el derecho de eliminar cualquier contenido o cuenta que 
     </script>
 </body>
 </html>
-
-
-
