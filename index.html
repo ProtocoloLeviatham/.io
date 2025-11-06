@@ -356,27 +356,27 @@ La comunidad se reserva el derecho de eliminar cualquier contenido o cuenta que 
                 }
             });
 
-            // Lógica al hacer clic en ACEPTAR
-            acceptButton.addEventListener('click', function() {
-                if (!acceptButton.disabled) {
-                    termsStatus.textContent = "> Protocolo de acceso ACEPTADO. Iniciando interfaz principal...";
-                    termsStatus.classList.remove('text-red-400');
-                    termsStatus.classList.add('text-green-400');
-                    
-                    // Aquí es donde harías la transición a la página principal de la comunidad
-                    setTimeout(() => {
-                        alert("¡Acceso concedido! Redirigiendo a la Interfaz Principal.");
-                        // window.location.href = "/main_interface.html"; // Descomenta esto para redireccionar
-                    }, 1000);
-                }
-            });
-        }
+           // Lógica al hacer clic en ACEPTAR
+            acceptButton.addEventListener('click', function() {
+                if (!acceptButton.disabled) {
+                    termsStatus.textContent = "> Protocolo de acceso ACEPTADO. Iniciando interfaz principal...";
+                    termsStatus.classList.remove('text-red-400');
+                    termsStatus.classList.add('text-green-400');
+                    
+                    // Aquí es donde harías la transición a la página principal de la comunidad
+                    setTimeout(() => {
+                        alert("¡Acceso concedido! Redirigiendo a la Interfaz Principal.");
+                        window.location.href = "https://protocololeviatham.github.io/foro.net/"; // Redirección solicitada
+                    }, 1000);
+                }
+            });
+        }
 
-        // Iniciar todo
-        window.onload = function () {
-            drawMatrixRain(); // Inicia la lluvia de Matrix inmediatamente
-            animateBootSequence(); // Inicia la secuencia de carga de 10 segundos
-        }
-    </script>
+        // Iniciar todo
+        window.onload = function () {
+            drawMatrixRain(); // Inicia la lluvia de Matrix inmediatamente
+            animateBootSequence(); // Inicia la secuencia de carga de 10 segundos
+        }
+    </script>
 </body>
 </html>
