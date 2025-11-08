@@ -1,416 +1,268 @@
+Nesecito que al tocar el botón de "COMUNIDAD" que esta al lado del boton de "FORO", Me redirijas a esta web "https://protocololeviatham.github.io/comunidad.net/" en la misma pestaña. Este es el código que tienes que agregar eso. NO CAMBIES NADA. Solo agrega eso.
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LEVIATHAM</title>
-    <link rel="icon" type="image/png" href="favicon.png">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Estilos personalizados para el canvas y la superposición */
-        body {
-            background-color: #000;
-            overflow: hidden;
-            height: 100vh;
-            width: 100vw;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        #matrixCanvas {
-            display: block;
-            z-index: 0;
-            position: absolute;
-        }
-        
-        /* Estilo base para todas las pantallas de superposición */
-        .overlay-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: #0F0; /* Verde brillante */
-            transition: opacity 1s ease-in-out;
-            z-index: 10;
-            background: rgba(0, 0, 0, 0.5); /* Oscurece un poco el fondo del matrix */
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leviatham</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de la fuente Inter y Share Tech Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos personalizados */
+        body {
+            /* Fuente principal Inter para texto legible */
+            font-family: 'Inter', sans-serif;
+            background-color: #1a0b2e;
+            color: #e0e0e0;
+            overflow-x: hidden; /* Evita el scroll horizontal */
+        }
+        
+        /* Estilo para la fuente del efecto matrix y títulos "hacker" */
+        .font-matrix {
+            font-family: 'Share Tech Mono', monospace;
+        }
 
-        /* Estilo para el logo ASCII */
-        #ascii-logo {
-            font-family: 'Courier New', Courier, monospace;
-            white-space: pre;
-            margin: 2rem 0;
-            text-shadow: 0 0 5px #0F0;
-        }
+        /* Canvas para el fondo animado */
+        #matrix-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Detrás de todo el contenido */
+            opacity: 0.3;
+        }
 
-        /* Efecto de parpadeo (cursor) */
-        @keyframes blink {
-            50% { opacity: 0; }
-        }
+        /* Contenedor principal para centrar contenido sobre el canvas */
+        .main-container {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-        .cursor {
-            display: inline-block;
-            width: 8px;
-            height: 1.2em;
-            background-color: #0F0;
-            animation: blink 1s step-end infinite;
-        }
+        /* Efecto de neón/brillo para los colaboradores */
+        @keyframes neon-glow {
+            0%, 100% {
+                text-shadow: 0 0 5px #c039ff, 0 0 10px #c039ff, 0 0 15px #c039ff, 0 0 20px #9d00ff, 0 0 30px #9d00ff;
+            }
+            50% {
+                text-shadow: 0 0 10px #c039ff, 0 0 15px #c039ff, 0 0 25px #9d00ff, 0 0 35px #9d00ff, 0 0 45px #9d00ff;
+            }
+        }
 
-        /* Estilos para el scrollbar temático (Chrome, Safari) */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #000;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background-color: #053b05;
-            border-radius: 20px;
-            border: 1px solid #0F0;
-        }
-    </style>
-    <script>
-        // Configuración de Tailwind para usar la fuente Inter
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                }
-            }
-        }
-    </script>
+        .collaborator-card {
+            background-color: rgba(26, 11, 46, 0.6);
+            border: 1px solid #6d28d9;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .collaborator-card:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 0 15px #6d28d9, 0 0 25px #6d28d9;
+        }
+        
+        .collaborator-name {
+            font-family: 'Share Tech Mono', monospace;
+            color: #e9d5ff;
+            animation: neon-glow 2.5s ease-in-out infinite;
+        }
+        
+        /* Líneas decorativas en los bordes */
+        .border-line {
+            position: fixed;
+            background: #6d28d9;
+            box-shadow: 0 0 10px #6d28d9;
+        }
+        
+        .line-left {
+            top: 0;
+            left: 10px;
+            width: 2px;
+            height: 100%;
+            opacity: 0.5;
+        }
+        
+        .line-right {
+            top: 0;
+            right: 10px;
+            width: 2px;
+            height: 100%;
+            opacity: 0.5;
+        }
+
+        /* Usar la fuente hacker para los títulos principales */
+        .font-matrix-title {
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        @media (max-width: 768px) {
+            .line-left, .line-right {
+                left: 5px;
+                right: 5px;
+                width: 1px;
+            }
+        }
+    </style>
 </head>
-<body class="font-sans">
-    <canvas id="matrixCanvas"></canvas>
-    
-    <div id="bootScreen" class="overlay-screen">
-        <div id="boot-messages" class="text-xl sm:text-2xl font-mono text-left w-full max-w-lg p-4">
-            </div>
+<body class="font-matrix"> <!-- La fuente base del body es la hacker -->
 
-        <div id="ascii-logo" class="text-base sm:text-xl opacity-0 transition-opacity duration-1000">
-            </div>
+    <!-- Canvas para el fondo animado -->
+    <canvas id="matrix-canvas"></canvas>
 
-        <div id="loading-bar-container" class="mt-8 w-full max-w-xs h-4 border border-green-500 bg-black">
-            <div id="loading-bar" class="h-full bg-green-700 transition-all duration-1000 ease-linear" style="width: 0%;"></div>
-        </div>
+    <!-- Líneas decorativas en los bordes -->
+    <div class="border-line line-left hidden md:block"></div>
+    <div class="border-line line-right hidden md:block"></div>
 
-        <p id="final-message" class="text-2xl sm:text-3xl font-bold mt-8 opacity-0 transition-opacity duration-1000">
-            </p>
-    </div>
+    <div class="main-container p-4 md:p-8">
+        
+        <!-- Header y Menú de Navegación -->
+        <header class="w-full max-w-6xl mx-auto mb-16">
+            <nav class="flex flex-col md:flex-row justify-between items-center rounded-lg p-4" style="background-color: rgba(20, 5, 35, 0.7); border: 1px solid #4c1d95; backdrop-filter: blur(5px);">
+                <div class="text-2xl font-bold text-purple-300 mb-4 md:mb-0">Protocolo Leviatham</div>
+                <ul class="flex flex-wrap justify-center gap-x-4 gap-y-2 md:gap-x-6">
+                    <li><a href="#" class="text-gray-300 hover:text-purple-400 font-medium transition-colors duration-300 text-sm md:text-base">FORO</a></li>
+                    <li><a href="#" class="text-gray-300 hover:text-purple-400 font-medium transition-colors duration-300 text-sm md:text-base">COMUNIDAD</a></li>
+                    <li><a href="#" class="text-gray-300 hover:text-purple-400 font-medium transition-colors duration-300 text-sm md:text-base">HERRAMIENTAS</a></li>
+                    <li><a href="#" class="text-gray-300 hover:text-purple-400 font-medium transition-colors duration-300 text-sm md:text-base">CÓDIGOS</a></li>
+                    <li><a href="#" class="text-gray-300 hover:text-purple-400 font-medium transition-colors duration-300 text-sm md:text-base">SOPORTE</a></li>
+                </ul>
+            </nav>
+        </header>
 
-    <div id="termsScreen" class="overlay-screen opacity-0 pointer-events-none p-4 sm:p-8">
-        <div class="p-8 w-full max-w-2xl h-full max-h-[90vh] bg-gray-900 border-2 border-green-500 shadow-2xl shadow-green-900/50 rounded-lg flex flex-col">
-            
-            <h2 class="text-3xl font-bold mb-4 text-green-400 text-center font-mono">
-                PROTOCOLO DE ACCESO: TÉRMINOS Y CONDICIONES
-            </h2>
+        <!-- Contenido Principal (Bienvenida) -->
+        <main class="flex-grow flex flex-col items-center justify-center text-center px-4">
+            <div class="p-8 rounded-xl max-w-3xl" style="background-color: rgba(20, 5, 35, 0.7); border: 1px solid #4c1d95; backdrop-filter: blur(5px);">
+                <h1 class="text-6xl md:text-8xl font-black text-purple-300 uppercase mb-6 font-matrix-title" style="text-shadow: 0 0 10px #9d00ff;">
+                    BIENVENIDO
+                </h1>
+                <!-- Texto de bienvenida legible con fuente Inter (font-sans) -->
+                <p class="font-sans text-lg md:text-2xl text-gray-200 leading-relaxed">
+                    Explora, aprende y comparte conocimientos de seguridad y hacking ético con nuestra comunidad.
+                </p>
+            </div>
+        </main>
 
-            <div id="terms-content" class="flex-grow overflow-y-scroll p-4 border-t border-b border-green-700 mb-6 font-mono text-sm text-left whitespace-pre-wrap leading-relaxed custom-scrollbar" style="height: 40vh;">
-                </div>
-            
-            <div class="flex flex-col items-center">
-                <p id="terms-status" class="mt-2 mb-4 text-sm font-mono text-red-400 opacity-0 transition-opacity duration-500">
-                    Desplácese hasta el final para activar el botón de ACEPTAR.
-                </p>
+        <!-- =========== SECCIÓN DE NOTICIAS DIARIAS =========== -->
+        <!-- PARA EDITAR: Simplemente cambia el contenido dentro de las etiquetas <p>, <h4> y la URL de la imagen -->
+        <section class="w-full max-w-4xl mx-auto my-16 px-4">
+            <div class="rounded-lg p-6 md:p-8" style="background-color: rgba(20, 5, 35, 0.7); border: 1px solid #4c1d95; backdrop-filter: blur(5px);">
+                <h2 class="text-3xl font-bold text-purple-300 text-center mb-6 font-matrix-title">// NOTICIA DEL DÍA //</h2>
+                
+                <!-- Noticia 1 -->
+                <article class="border-b border-purple-800 pb-4 mb-4">
+                    
+                    <!-- Para añadir una imagen, descomenta la siguiente línea y pon la URL -->
+                    <!--
+                    <img src="https://placehold.co/800x400/1a0b2e/c039ff?text=Protocolo+Leviatham" alt="Imagen de la noticia" class="w-full h-auto max-h-72 object-cover rounded-md mb-4">
+                    -->
+                    
+                    <!-- Título de la noticia -->
+                    <h4 class="text-xl font-semibold text-gray-200 font-sans mb-3">Un Nuevo Comienzo: Mensaje De Su Fundador</h4>
+                    
+                    <!-- Cuerpo de la noticia (fuente legible) -->
+                    <p class="text-gray-300 font-sans leading-relaxed">
+                        Un mensaje de nuestro fundador, KaliHunter32:
+                        <br><br>
+                      Durante un buen tiempo, fui parte de una comunidad bastante grande en la aplicación Telegram. Para ser exactos, era un grupo con más de quince mil miembros. Dentro de ese espacio, la gente me conocía por un número, simplemente como el Número 32. Ese era mi nombre, mi identificación.
+Mi habilidad principal, mi especialidad, siempre fue la seguridad ofensiva. Esto significa que me dedicaba a revisar a fondo las infraestructuras web y los sistemas digitales de diferentes organizaciones, pero no para protegerlos, sino para encontrar sus puntos débiles y sus fallos de seguridad. Era bueno en eso, muy bueno.
+Mi trabajo consistía en derribar sitios web y, una vez caídos, los desmantelaba para asegurar que la comunidad dejara su firma o huella en ellos, como prueba de que habíamos estado allí. Mi reputación creció gracias a que llegué a tener el control de una de las botnets más potentes y eficaces que existían dentro de ese grupo. Una botnet es un conjunto de computadoras controladas de forma remota, y la mía era superior a las demás. Es por esa capacidad y ese poder que me gané el nombre de KaliHunter.
+Sin embargo, con el paso del tiempo, mi perspectiva empezó a cambiar. Me fui dando cuenta de que los objetivos de ese grupo, las cosas que buscaban y lo que hacían, ya no encajaban con mis propios principios o con la dirección que quería tomar en mi vida. Los fines que perseguían se sentían, de repente, equivocados..
+                        <br>
+                        Tomé la decisión de alejarme de todo por mi propia seguridad y, sobre todo, para poder empezar algo completamente nuevo y diferente. Necesitaba un cambio de rumbo.
+De esa decisión firme y personal nace este proyecto, al que he llamado 'Protocolo Leviatán'. Mi meta ahora es dedicar toda esa experiencia y conocimiento a crear una comunidad que sea sana. Un lugar donde la gente pueda aprender cosas nuevas, compartir información y mejorar juntos sus habilidades, pero siempre, y esto es lo importante, dentro de un marco de ética y legalidad.
+Aquí, el conocimiento que tengo y que podemos generar entre todos es para construir cosas útiles, para desarrollar, para proteger, y no para la destrucción o para causar problemas. Esta es una invitación abierta. Bienvenidos sean todos a este nuevo camino.
+                        <br>
+                    </p>
+                </article>
+                
+                <!-- Puedes añadir más noticias copiando la estructura de <article> ... </article> -->
 
-                <button id="accept-button" class="w-full max-w-sm py-2 bg-gray-600 cursor-not-allowed transition duration-300 text-black font-extrabold rounded-sm shadow-md shadow-gray-900/50" disabled>
-                    ACEPTAR Y CONTINUAR <span class="text-xs"> (CMD:ACCEPT)</span>
-                </button>
-            </div>
-        </div>
-    </div>
+            </div>
+        </section>
+        <!-- =================================================== -->
 
-        <div id="mainInterface" class="overlay-screen opacity-0 pointer-events-none p-4 sm:p-8">
-        <div class="text-center w-full max-w-xl">
-            <h1 class="text-5xl font-extrabold mb-8 font-mono text-green-400">
-                [ LEVIATHAM ONLINE ]
-            </h1>
-            <p class="text-xl mb-12 font-mono text-green-200">
-                Acceso Autorizado. Seleccione una opción de protocolo.
-            </p>
-            <div class="space-y-4">
-                                <a href="https://protocololeviatham.github.io/comunidad.net/" target="_self" class="block w-full py-4 bg-green-700 hover:bg-green-600 transition duration-300 text-black font-extrabold rounded-sm shadow-lg shadow-green-900/50 font-mono text-xl">
-                    COMUNIDAD (CMD:COM)
-                </a>
-                                <button class="block w-full py-4 bg-gray-700 hover:bg-gray-600 transition duration-300 text-green-400 font-extrabold rounded-sm shadow-lg shadow-gray-900/50 font-mono text-xl">
-                    RECURSOS (CMD:RES)
-                </button>
-                <button class="block w-full py-4 bg-gray-700 hover:bg-gray-600 transition duration-300 text-green-400 font-extrabold rounded-sm shadow-lg shadow-gray-900/50 font-mono text-xl">
-                    DOCUMENTACIÓN (CMD:DOC)
-                </button>
-            </div>
-        </div>
-    </div>
-        <script>
-        // --- PARTE 1: LÓGICA DEL MATRIX RAIN (MEJORADA) ---
 
-        const canvas = document.getElementById('matrixCanvas');
-        const ctx = canvas.getContext('2d');
-        const katakana = 'アァカサタナハマヤラワガザダバパヰヱヲンヴヵヶ' +
-                         '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const characters = katakana.split('');
-        const fontSize = 16;
-        let columns = 0;
-        let drops = [];
+        <!-- Sección de Colaboradores (en el footer) -->
+        <footer class="w-full max-w-6xl mx-auto mt-16 py-8">
+            <h3 class="text-center text-2xl text-purple-300 font-bold mb-8 font-matrix-title">COLABORADORES</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Colaborador 1 -->
+                <div class="collaborator-card rounded-lg p-6 text-center">
+                    <h4 class="collaborator-name text-2xl font-bold">System404G</h4>
+                </div>
+                <!-- Colaborador 2 -->
+                <div class="collaborator-card rounded-lg p-6 text-center">
+                    <h4 class="collaborator-name text-2xl font-bold">Team Virus</h4>
+                </div>
+                <!-- Colaborador 3 -->
+                <div class="collaborator-card rounded-lg p-6 text-center">
+                    <h4 class="collaborator-name text-2xl font-bold">Lazarus</h4>
+                </div>
+            </div>
+        </footer>
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            columns = Math.floor(canvas.width / fontSize);
-            drops = [];
-            for (let i = 0; i < columns; i++) {
-                drops[i] = Math.floor(Math.random() * canvas.height / fontSize); 
-            }
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+    </div>
 
-        function drawMatrixRain() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; 
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+    <!-- Script para el efecto Matrix -->
+    <script>
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
 
-            ctx.font = fontSize + 'px monospace';
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-            for (let i = 0; i < drops.length; i++) {
-                const x = i * fontSize;
-                let y = drops[i] * fontSize;
+        let katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+        let latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        let chars = katakana + latin;
+        chars = chars.split('');
 
-                const text = characters[Math.floor(Math.random() * characters.length)];
-                
-                // Color para la cola (Verde estándar)
-                ctx.fillStyle = '#01a61c'; 
-                ctx.fillText(text, x, y);
+        const fontSize = 16;
+        let columns = Math.floor(canvas.width / fontSize);
 
-                // Color para la cabeza (Verde brillante)
-                const headY = (drops[i] - 5) * fontSize;
-                if (headY > 0) {
-                    ctx.fillStyle = '#C0FFC0'; 
-                    ctx.fillText(text, x, headY);
-                }
+        let drops = [];
+        for (let x = 0; x < columns; x++) {
+            drops[x] = 1;
+        }
 
-                // Reinicia la gota
-                if (y > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-                
-                drops[i]++;
-            }
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(26, 11, 46, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            requestAnimationFrame(drawMatrixRain);
-        }
+            ctx.fillStyle = '#9d00ff'; 
+            ctx.font = fontSize + 'px "Share Tech Mono", monospace';
 
-        // --- PARTE 2: LÓGICA DE LA SECUENCIA DE BOOT Y TRANSICIÓN ---
+            for (let i = 0; i < drops.length; i++) {
+                let text = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                drops[i]++;
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+            }
+        }
 
-        const BOOT_DURATION_MS = 10000;
-        const bootScreen = document.getElementById('bootScreen');
-        const termsScreen = document.getElementById('termsScreen');
-        const mainInterface = document.getElementById('mainInterface'); // Nueva referencia
-        const bootMessagesDiv = document.getElementById('boot-messages');
-        const asciiLogoDiv = document.getElementById('ascii-logo');
-        const loadingBar = document.getElementById('loading-bar');
-        const finalMessage = document.getElementById('final-message');
+        setInterval(drawMatrix, 40);
 
-        // NUEVO LOGO
-        const logoLines = [
-            "[ Iniciando Codificación ]",
-            "",
-            "                     .'.. /|",
-            "                    / |  //",
-            "                 _.'./.'./",
-            "                ( LEVIATHAN )",
-            "                 \\_`\\_`\\_/",
-            "                   / / /",
-            "                  | | |",
-            "                  \\_/",
-            "",
-            "                [ Status: Online ]",
-            "",
-            "[ Imdustrias Lazarus ]",
-            "",
-            "                       [ KaliHunter32 ]"
-        ];
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            columns = Math.floor(canvas.width / fontSize);
+            drops = [];
+            for (let x = 0; x < columns; x++) {
+                drops[x] = 1;
+            }
+        });
+    </script>
 
-        const messages = [
-            `> Conectado a servidores de system404G`,
-            `> Ejecutando protocolo leviatham. Acceso concedido.`,
-            `> Verificando terminal [ OK ]`,
-            `> Inicializando subsistemas de interfaz ...`
-        ];
-
-        let currentMessageIndex = 0;
-        let currentLogoLine = 0;
-
-        function updateBootMessages() {
-            // Asegura que el cursor solo esté en el último mensaje
-            const lastCursor = bootMessagesDiv.querySelector('.cursor');
-            if (lastCursor) lastCursor.remove();
-
-            if (currentMessageIndex < messages.length) {
-                const message = messages[currentMessageIndex];
-                bootMessagesDiv.innerHTML += `<p class="mb-1">${message}<span class="cursor"></span></p>`;
-                currentMessageIndex++;
-                
-                // Muestra un mensaje cada 1.5 segundos
-                setTimeout(updateBootMessages, 1500);
-            } else if (currentLogoLine < logoLines.length) {
-                // Empieza a construir el logo después de los mensajes
-                asciiLogoDiv.innerHTML += `${logoLines[currentLogoLine]}\n`;
-                asciiLogoDiv.style.opacity = '1';
-                currentLogoLine++;
-
-                // Acelera la construcción del logo
-                setTimeout(updateBootMessages, 150);
-            }
-        }
-
-        function animateBootSequence() {
-            const startTime = Date.now();
-
-            function loop() {
-                const elapsed = Date.now() - startTime;
-                const progress = Math.min(1, elapsed / BOOT_DURATION_MS);
-
-                // Actualiza la barra de carga
-                loadingBar.style.width = `${Math.floor(progress * 100)}%`;
-
-                if (progress < 1) {
-                    requestAnimationFrame(loop);
-                } else {
-                    // Finaliza la carga, muestra el mensaje final y transiciona
-                    showFinalMessage();
-                }
-            }
-
-            // Inicia la animación de mensajes y logo
-            updateBootMessages();
-            // Inicia la barra de carga
-            loop();
-        }
-
-        function showFinalMessage() {
-            // Elimina el cursor final de los mensajes de boot
-            const lastCursor = bootMessagesDiv.querySelector('.cursor');
-            if (lastCursor) lastCursor.remove();
-            
-            finalMessage.textContent = "Conexión estable. Iniciando protocolo de acceso...";
-            finalMessage.style.opacity = '1';
-
-            // 1.5 segundos después del final de la carga, transiciona a T&C
-            setTimeout(transitionToTerms, 1500);
-        }
-
-        function transitionToTerms() {
-            // Oculta la pantalla de boot
-            bootScreen.style.opacity = '0';
-            bootScreen.classList.add('pointer-events-none');
-
-            // Muestra la pantalla de T&C
-            termsScreen.style.opacity = '1';
-            termsScreen.classList.remove('pointer-events-none');
-
-            // Inicia la lógica de T&C
-            setupTermsAndConditions();
-        }
-
-        // --- PARTE 3: LÓGICA DE TÉRMINOS Y CONDICIONES Y TRANSICIÓN A LA INTERFAZ PRINCIPAL ---
-        
-        const termsContentDiv = document.getElementById('terms-content');
-        const acceptButton = document.getElementById('accept-button');
-        const termsStatus = document.getElementById('terms-status');
-
-        // Texto de los Términos y Condiciones (se usa el texto proporcionado)
-        const termsText = `
-LEA ATENTAMENTE ESTOS TÉRMINOS ANTES DE CONTINUAR.
-
-1. Objeto y Filosofía de la Comunidad
-
-La comunidad "Protocol Leviathan" es un espacio de libre información, estudio, divulgación y debate enfocado en la Informática, la Ciberseguridad y el Hacking Ético. Nuestro objetivo es la difusión del conocimiento técnico para promover la seguridad digital y la comprensión de los sistemas. No buscamos crear una comunidad maliciosa.
-
-2. Principios de Uso y Hacking Ético
-
-El usuario acepta que todo el contenido, herramientas, técnicas y enseñanzas compartidas están destinados exclusivamente a fines educativos, de investigación y de defensa (Hacking Ético).
-El usuario se compromete a: 
-
-- No utilizar la información, el código o las herramientas para dañar sistemas, personas, organizaciones o propiedades sin autorización expresa y documentada de su propietario.
-
-- Respetar las leyes de la República Argentina con respecto al acceso y modificación de sistemas informáticos.
-
-3. Exención de Responsabilidad y Limitación Legal (Argentina)
-
-El creador y distribuidor de esta comunidad, KaliHunter32, opera bajo el principio de la libre información y la neutralidad tecnológica.
-KaliHunter32 NO se hace responsable del mal uso que los miembros o terceros puedan dar a las herramientas, conocimientos y enseñanzas impartidas dentro de "Protocol Leviathan". La responsabilidad legal recae única y exclusivamente en el usuario que realiza la acción.
-La comunidad se abstiene de hacerse cargo legalmente de las consecuencias derivadas de las acciones individuales de sus miembros. 
-El usuario reconoce que cualquier acto ilegal que cometa utilizando información de esta web lo hace bajo su propia cuenta y riesgo, y que tales actos están tipificados como delitos en el Código Penal de la Nación Argentina (Ley 26.388), incluyendo, pero no limitándose a:
-
-- Violación de correspondencia (Art. 153 C.P.): El acceso indebido a comunicaciones electrónicas o datos restringidos.
-
-- Acceso ilegítimo a un sistema informático (Art. 153 bis C.P.): El que sin la debida autorización o excediendo la que posea, acceda a un sistema o dato informático de acceso restringido.
-
-- Sabotaje o daño informático (Art. 183 y 184 C.P.): El que destruyere, inutilizare, dañare, borrare o hiciere desaparecer datos, documentos, programas o sistemas de computación.
-Al aceptar, el usuario desvincula totalmente a KaliHunter32 y a la comunidad "Protocol Leviathan" de toda consecuencia penal, civil o administrativa que pueda derivarse de su conducta.
-
-4. Moderación y Terminación de la Cuenta
-
-La comunidad se reserva el derecho de eliminar cualquier contenido o cuenta que promueva o ejecute actividades maliciosas o ilegales sin previo aviso.
-        `;
-
-        function transitionToMainInterface() {
-            // Oculta la pantalla de T&C
-            termsScreen.style.opacity = '0';
-            termsScreen.classList.add('pointer-events-none');
-
-            // Muestra la interfaz principal
-            mainInterface.style.opacity = '1';
-            mainInterface.classList.remove('pointer-events-none');
-        }
-
-        function setupTermsAndConditions() {
-            termsContentDiv.textContent = termsText.trim();
-            termsStatus.style.opacity = '1';
-
-            // Función para verificar si el usuario llegó al final del scroll
-            termsContentDiv.addEventListener('scroll', function() {
-                const { scrollTop, scrollHeight, clientHeight } = termsContentDiv;
-
-                // Margen de 1 píxel para asegurar que funciona en todos los navegadores
-                if (scrollHeight - scrollTop <= clientHeight + 1) {
-                    // El usuario llegó al final
-                    acceptButton.disabled = false;
-                    acceptButton.classList.remove('bg-gray-600', 'cursor-not-allowed', 'shadow-gray-900/50');
-                    acceptButton.classList.add('bg-green-700', 'hover:bg-green-600', 'shadow-green-900/50');
-                    termsStatus.textContent = '¡LECTURA COMPLETA! Presione ACEPTAR para continuar.';
-                    termsStatus.classList.remove('text-red-400');
-                    termsStatus.classList.add('text-green-400');
-                }
-            });
-
-           // Lógica al hacer clic en ACEPTAR
-            acceptButton.addEventListener('click', function() {
-                if (!acceptButton.disabled) {
-                    termsStatus.textContent = "> Protocolo de acceso ACEPTADO. Iniciando interfaz principal...";
-                    termsStatus.classList.remove('text-red-400');
-                    termsStatus.classList.add('text-green-400');
-                    
-                    // Transiciona a la nueva interfaz principal con los botones
-                    setTimeout(transitionToMainInterface, 1000);
-                }
-            });
-        }
-
-        // Iniciar todo
-        window.onload = function () {
-            drawMatrixRain(); // Inicia la lluvia de Matrix inmediatamente
-            animateBootSequence(); // Inicia la secuencia de carga de 10 segundos
-        }
-    </script>
 </body>
+
 </html>
